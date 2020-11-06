@@ -90,8 +90,6 @@ namespace FromLocalsToLocals.Controllers
                     {
                         if (model.Image.Length > 0)
                         {
-                            var fileExtension = Path.GetExtension(model.Image.FileName);
-
                             using (var target = new MemoryStream())
                             {
                                 model.Image.CopyTo(target);
@@ -176,8 +174,6 @@ namespace FromLocalsToLocals.Controllers
                     {
                         if (model.Image.Length > 0)
                         {
-                            var fileExtension = Path.GetExtension(model.Image.FileName);
-
                             using (var target = new MemoryStream())
                             {
                                 model.Image.CopyTo(target);
@@ -269,12 +265,5 @@ namespace FromLocalsToLocals.Controllers
 
         #endregion
 
-        public FileContentResult getImg(int id)
-        {
-            byte[] byteArray = _context.Vendors.Find(id).Image;
-            return byteArray != null
-                ? new FileContentResult(byteArray, "image/jpeg")
-                : null;
-        }
     }
 }
