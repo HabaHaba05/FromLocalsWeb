@@ -1,4 +1,4 @@
-﻿@model FromLocalsToLocals.Models.Vendor
+﻿@model FromLocalsToLocals.ViewModels.CreateEditVendorVM
 
 @{
     ViewData["Title"] = "Create";
@@ -10,6 +10,6 @@
 <h4>Vendor</h4>
 <hr />
 <div class="container">
-    @Html.Partial("_ServiceAddEdit", Model)
+    <partial name="_ServiceAddEdit" />
 </div>
 

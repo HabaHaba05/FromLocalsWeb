@@ -1,11 +1,12 @@
-﻿@model FromLocalsToLocals.Models.Vendor
+﻿@model FromLocalsToLocals.ViewModels.CreateEditVendorVM
 
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyCPxOjZ_WSRa0zBceLwlDmTfLoJha8MYYg"></script>
 
+
 <div class="row">
     <div class="col-sm">
-        <form asp-action="@Html.ViewContext.RouteData.Values["action"]">
+        <form asp-action="@Html.ViewContext.RouteData.Values["action"]" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -31,6 +32,11 @@
                 <label asp-for="VendorType" class="control-label"></label>
                 @Html.DropDownListFor(m => m.VendorType,
                      new SelectList(Enum.GetValues(typeof(FromLocalsToLocals.Utilities.VendorType))))
+            </div>
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input asp-for="Image" class="form-control" type="file" />
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Confirm" class="btn btn-success" />

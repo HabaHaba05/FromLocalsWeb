@@ -37,6 +37,7 @@ namespace FromLocalsToLocals.Models
 
         [Required] public double Longitude { get; set; }
 
+        public byte[] Image { get; set; }
 
         [Column("VendorType")]
         [DisplayName("Vendor Type")]

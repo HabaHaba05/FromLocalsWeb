@@ -52,9 +52,17 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
-    this._div.innerHTML = props ? (`<div ><button type = 'button' id='mygtukas' class='boxclose' onClick='closeInfoTab()'></button><img src='/../Assets/appLogo.png' width='100%'/><div><hr>
-                                <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>`) : '<span style="color:#916814">Select vendor</span>';   
+    this._div.innerHTML = props ? (props.picture ? `<div ><button type = 'button' id='mygtukas' class='boxclose' onClick='closeInfoTab()'></button><img src='data:image;base64,${props.picture}' height='100px' width='100%'/><div><hr>
+            <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>` : `<div ><button type = 'button' id='mygtukas' class='boxclose' onClick='closeInfoTab()'></button><img src='/../Assets/appLogo.png' width='100%'/><div><hr>
+                     <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>` ) : '<span style="color:#916814">Select vendor</span>';
+
 };
+function kzk(props) {
+    return innerHTML();
+}
+function kzk0(props) {
+    return innerHTML();
+}
 
 info.addTo(map);
 
@@ -155,7 +163,8 @@ function addMarkers() {
             var newMarker = L.marker([allVendors[i].Latitude, allVendors[i].Longitude], {
                 title: allVendors[i].Title,
                 id: allVendors[i].ID,
-                icon: new vendorIcon({ iconUrl: `/../Assets/${allVendors[i].VendorTypeDb}.png` })
+                icon: new vendorIcon({ iconUrl: `/../Assets/${allVendors[i].VendorTypeDb}.png` }),
+                picture: allVendors[i].Image 
             }).on('click', function onClick(e) {
                 info.update(e.target.options);
             });

@@ -7,7 +7,14 @@
 
 <div class="row">
     <div class="col-sm-6">
-        <img src="~/Assets/appLogo.png" style="width:inherit" />
+        @if (Model.Image == null)
+        {
+            <img src="~/Assets/appLogo.png" style="width:inherit" />
+        }
+        else
+        {
+            <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" style="width:inherit ; max-height:350px;"/> 
+        }
     </div>
     <div class="col-sm-6">
         <h1>@Model.Title</h1>

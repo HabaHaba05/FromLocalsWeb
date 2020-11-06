@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Policy;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace FromLocalsToLocals.Controllers
 {
@@ -68,28 +69,48 @@ namespace FromLocalsToLocals.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Vendor model)
+        public async Task<IActionResult> Create(CreateEditVendorVM model)
         {
-            if (ModelState.GetFieldValidationState("Title") == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid &&
-                ModelState.GetFieldValidationState("Address") == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid)
+            if (ModelState.IsValid)
             {
                 var latLng = await MapMethods.ConvertAddressToLocationAsync(model.Address);
 
                 if (latLng != null)
                 {
-
-                    model.UserID = _userManager.GetUserId(User);
-                    model.Latitude = latLng.Item1;
-                    model.Longitude = latLng.Item2;
+                    var vendor = new Vendor();
                     
-                    _context.Vendors.Add(model);
+                    vendor.UserID = _userManager.GetUserId(User);
+                    vendor.Latitude = latLng.Item1;
+                    vendor.Longitude = latLng.Item2;
+                    vendor.Title = model.Title;
+                    vendor.About = model.About;
+                    vendor.Address = model.Address;
+
+                    if (model.Image != null)
+                    {
+                        if (model.Image.Length > 0)
+                        {
+                            var fileExtension = Path.GetExtension(model.Image.FileName);
+
+                            using (var target = new MemoryStream())
+                            {
+                                model.Image.CopyTo(target);
+                                vendor.Image = target.ToArray();
+                            }
+                        }
+                    }
+
+                    _context.Vendors.Add(vendor);
                     _context.SaveChanges();
 
                     return RedirectToAction("MyVendors");
                 }
+                else
+                {
+                    //Inform the client-side that address is not recognizable
+                }
             }
 
-            //Somehow we should inform the client-side that probably address is not recognizable
             return View(model);
         }
 
@@ -112,12 +133,20 @@ namespace FromLocalsToLocals.Controllers
                 return NotFound();
             }
 
-            return View(vendor);
+            var model = new CreateEditVendorVM
+            {
+                ID = vendor.ID,
+                Title = vendor.Title,
+                About = vendor.About,
+                Address = vendor.Address
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Vendor model)
+        public async Task<IActionResult> Edit(int id, CreateEditVendorVM model)
         {
             if (id != model.ID)
             {
@@ -131,8 +160,7 @@ namespace FromLocalsToLocals.Controllers
                 return NotFound();
             }
 
-            if (ModelState.GetFieldValidationState("Title") == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid &&
-                ModelState.GetFieldValidationState("Address") == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -144,12 +172,27 @@ namespace FromLocalsToLocals.Controllers
                         return View(model);
                     }
 
+                    if (model.Image != null)
+                    {
+                        if (model.Image.Length > 0)
+                        {
+                            var fileExtension = Path.GetExtension(model.Image.FileName);
+
+                            using (var target = new MemoryStream())
+                            {
+                                model.Image.CopyTo(target);
+                                vendor.Image = target.ToArray();
+                            }
+                        }
+                    }
+
                     vendor.Title = model.Title;
                     vendor.About = model.About;
                     vendor.Address = model.Address;
                     vendor.Latitude = latLng.Item1;
                     vendor.Longitude = latLng.Item2;
                     vendor.VendorType = model.VendorType;
+                    
 
                     _context.Update(vendor);
                     await _context.SaveChangesAsync();
@@ -225,5 +268,13 @@ namespace FromLocalsToLocals.Controllers
         }
 
         #endregion
+
+        public FileContentResult getImg(int id)
+        {
+            byte[] byteArray = _context.Vendors.Find(id).Image;
+            return byteArray != null
+                ? new FileContentResult(byteArray, "image/jpeg")
+                : null;
+        }
     }
 }
