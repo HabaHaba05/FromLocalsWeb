@@ -8,8 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FromLocalsToLocals</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css"/>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <script src="~/lib/jquery/dist/jquery.js"></script>
 
     @*!--LeafLet CSS and Script-->*@
@@ -31,7 +33,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light" style="background-color: whitesmoke; text-size-adjust: 70%;">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/Assets/appLogo.png" width="90" height="40"/>
+                    <img src="~/Assets/appLogo.png" width="90" height="40" />
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -65,25 +67,30 @@
                         }
                     </ul>
                     <ul class="navbar-nav">
-                        @if (signInManager.IsSignedIn(User))
-                        {
-                            <li class="nav-item">
-                                <form method="post" asp-action="logout" asp-controller="Account">
-                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto;">
-                                        Logout @User.Identity.Name
-                                    </button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="login">Log In</a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user-tie"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @if (signInManager.IsSignedIn(User))
+                                    {
+                                        <form method="post" asp-action="logout" asp-controller="Account">
+                                            <button type="submit" class="nav-link btn btn-link py-0" style="width:auto;">
+                                                <i class="fas fa-sign-out-alt"></i> Logout
+                                            </button>
+                                        </form>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Settings"><i class="fas fa-user-cog"></i> Settings</a>
+
+                                    }
+                                    else
+                                    {
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Login"><i class="fas fa-sign-in-alt"></i> Log In</a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Register"><i class="far fa-registered"></i>Register</a>
+                                    }
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -103,7 +110,7 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
