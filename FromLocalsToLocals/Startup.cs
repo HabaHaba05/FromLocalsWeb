@@ -38,6 +38,7 @@ namespace FromLocalsToLocals
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireUppercase = false;
+                    options.User.RequireUniqueEmail = true;
                 }).AddEntityFrameworkStores<AppDbContext>();
 
           
