@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
+using FromLocalsToLocals.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -44,6 +45,7 @@ namespace FromLocalsToLocals
 
                     options.User.RequireUniqueEmail = true;
                 }).AddEntityFrameworkStores<AppDbContext>();
+
 
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
              {

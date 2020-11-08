@@ -5,6 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
@@ -107,7 +110,32 @@ namespace FromLocalsToLocals.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToPage("./ForgotPasswordConfirmation");
+                }
+                    
+                //Code for sending email
+
+                _toastNotification.AddSuccessToastMessage("Email sent");
+                return RedirectToPage("./ForgotPasswordConfirmation");
+            }
+
+            return View();
+        }
+
         public IActionResult Profile()
         {
             var userId = _userManager.GetUserId(User);
@@ -200,7 +228,6 @@ namespace FromLocalsToLocals.Controllers
             
             return Profile();
         }
-
         private async Task<IActionResult> ChangePassword(ProfileVM model)
         {
             if(string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword) || string.IsNullOrWhiteSpace(model.ConfirmPassword))

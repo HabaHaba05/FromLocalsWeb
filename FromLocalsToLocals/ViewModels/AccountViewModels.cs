@@ -1,7 +1,4 @@
-﻿
-
-using FromLocalsToLocals.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace FromLocalsToLocals.ViewModels
@@ -73,6 +70,12 @@ namespace FromLocalsToLocals.ViewModels
         public string ConfirmPassword { get; set; }
     }
 
+    public class ForgotPasswordVM
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+    }
 
 
 
