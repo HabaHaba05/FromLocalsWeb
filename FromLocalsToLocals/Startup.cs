@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NToastNotify;
 
 namespace FromLocalsToLocals
 {
@@ -38,10 +39,18 @@ namespace FromLocalsToLocals
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireLowercase = false;
+
                     options.User.RequireUniqueEmail = true;
                 }).AddEntityFrameworkStores<AppDbContext>();
 
-          
+            services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+             {
+                 ProgressBar = false,
+                 PositionClass = ToastPositions.BottomCenter
+             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +66,7 @@ namespace FromLocalsToLocals
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -64,6 +74,8 @@ namespace FromLocalsToLocals
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {

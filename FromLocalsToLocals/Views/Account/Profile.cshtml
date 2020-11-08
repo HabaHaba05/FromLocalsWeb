@@ -1,48 +1,70 @@
 ﻿@model FromLocalsToLocals.ViewModels.ProfileVM
+@inject UserManager<AppUser> userManager;
 
 <h1>Profile</h1>
 
-<form asp-action="Profile" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="row">
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Profile" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    @if (Model.Image == null)
+                    {
+                        <img id="image_upload_preview" src="~/Assets/profile.png" style="width:inherit" />
+                    }
+                    else
+                    {
+                        <img id="image_upload_preview" src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" style="width:inherit; max-height:350px;" />
+                    }
 
-        <div class="col-md-4">
-            @if (Model.Image == null)
-            {
-                <img id="image_upload_preview" src="~/Assets/profile.png" style="width:inherit" />
-            }
-            else
-            {
-                <img id="image_upload_preview" src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" style="width:inherit; max-height:350px;" />
-            }
+                    <div class="form-group">
+                        <input asp-for="ImageFile" class="form-control" type="file" id="changePhoto" />
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <input asp-for="ImageFile" class="form-control" type="file" id="changePhoto" />
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserName"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <hr />
+                <button type="submit" class="btn btn-success" style="width:100%" name="submitBtn" value="picName">Save Changes</button>
             </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" type="email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserName"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-        </div>
+        </form>
     </div>
-    <hr />
-    <button type="submit" class="btn btn-success" style="width:100%">Save Changes</button>
-</form>
-
-
+    <form class="col-md-4" asp- asp-action="Profile" method="post">
+        <div class="form-group">
+            <label asp-for="OldPassword"></label>
+            <input asp-for="OldPassword" class="form-control" />
+            <span asp-validation-for="OldPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="NewPassword"></label>
+            <input asp-for="NewPassword" class="form-control" />
+            <span asp-validation-for="NewPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary" name="submitBtn" value="password">Update password</button>
+    </form>
+</div>
+@await Component.InvokeAsync("NToastNotify")
 
 
 <script>
+
     function changePic(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();

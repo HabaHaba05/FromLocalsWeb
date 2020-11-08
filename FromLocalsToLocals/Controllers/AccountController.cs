@@ -4,15 +4,21 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
 using FromLocalsToLocals.ViewModels;
 using Geocoding;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NToastNotify;
 
 namespace FromLocalsToLocals.Controllers
 {
@@ -21,12 +27,16 @@ namespace FromLocalsToLocals.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly AppDbContext _context;
+        private readonly ILogger<AccountController> _logger;
+        private readonly IToastNotification _toastNotification;
 
-        public AccountController(UserManager<AppUser> userManager , SignInManager<AppUser> signInManager, AppDbContext context )
+        public AccountController(UserManager<AppUser> userManager , SignInManager<AppUser> signInManager, AppDbContext context, ILogger<AccountController> logger, IToastNotification toastNotification)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _logger = logger;
+            _toastNotification = toastNotification;
         }
 
         [HttpPost]
@@ -110,7 +120,19 @@ namespace FromLocalsToLocals.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Profile(ProfileVM model)
+        public async Task<IActionResult> Profile(string submitBtn,ProfileVM model)
+        {
+            switch (submitBtn)
+            {
+                case "picName":
+                    return await PicNameChange(model);
+                case "password":
+                    return await ChangePassword(model);
+                default:
+                    return View();
+            }
+        }
+        private async Task<IActionResult> PicNameChange(ProfileVM model)
         {
             var userId = _userManager.GetUserId(User);
             var user = _context.Users.Single(x => x.Id == userId);
@@ -119,7 +141,12 @@ namespace FromLocalsToLocals.Controllers
 
             if (model.UserName != user.UserName)
             {
-                if(!_context.Users.Any(x => x.UserName == model.UserName))
+                if(model.UserName == "")
+                {
+                    ModelState.FirstOrDefault(x => x.Key == nameof(model.UserName)).Value.RawValue = user.UserName;
+                    ModelState.AddModelError("", $"Username cannot be empty");
+                }
+                else if(!_context.Users.Any(x => x.UserName == model.UserName))
                 {
                     var resUser = await _userManager.SetUserNameAsync(user, model.UserName);
                     resultsList.Add(resUser);
@@ -132,7 +159,12 @@ namespace FromLocalsToLocals.Controllers
             }
             if (model.Email != user.Email)
             {
-                if (!_context.Users.Any(x => x.Email == model.Email))
+                if (model.Email == "")
+                {
+                    ModelState.FirstOrDefault(x => x.Key == nameof(model.Email)).Value.RawValue = user.Email;
+                    ModelState.AddModelError("", $"Email cannot be empty");
+                }
+                else if (!_context.Users.Any(x => x.Email == model.Email))
                 {
                     var resEmail = await _userManager.SetEmailAsync(user, model.Email);
                     resultsList.Add(resEmail);
@@ -162,10 +194,49 @@ namespace FromLocalsToLocals.Controllers
             {
                 errors.ForEach(e => ModelState.AddModelError("", e));
             }
-
+            
+            if(ModelState.ErrorCount == 0)
+            _toastNotification.AddSuccessToastMessage("Changes saved successfully");
+            
             return Profile();
         }
 
+        private async Task<IActionResult> ChangePassword(ProfileVM model)
+        {
+            if(string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
+            {
+                ModelState.AddModelError("", "Please, fill all fields");
+                return Profile();
+            }
+            if (model.NewPassword.Length < 6)
+            {
+                ModelState.AddModelError("", "Password must be at least 6 characters long");
+                return Profile();
+            }
+
+            if (model.NewPassword != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Passwords do not match");
+                return Profile();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return Profile();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            _toastNotification.AddSuccessToastMessage("Password changed successfully");
+
+            return Profile();
+        }
 
         #region Helpers
 

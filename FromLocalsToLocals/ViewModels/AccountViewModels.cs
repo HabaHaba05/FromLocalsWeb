@@ -15,7 +15,7 @@ namespace FromLocalsToLocals.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember be")]
+        [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
     }
 
@@ -51,17 +51,26 @@ namespace FromLocalsToLocals.ViewModels
             Image = img;
         }
 
-        [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required]
         public string UserName { get; set; }
 
         public byte[] Image { get; set; }
 
         public IFormFile ImageFile { get; set; }
 
+        [DataType(DataType.Password)]
+        [Display(Name = "Current password")]
+        public string OldPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "New password")]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm new password")]
+        public string ConfirmPassword { get; set; }
     }
 
 
