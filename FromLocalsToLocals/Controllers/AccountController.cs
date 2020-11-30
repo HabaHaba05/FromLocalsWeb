@@ -394,7 +394,8 @@ namespace FromLocalsToLocals.Controllers
                 var htmlContent = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>" +
 
                                   "Please confirm your account by clicking this link: <a href =\""
-                                                 + callbackUrl + "\">link</a> </body></html>";
+                                   + callbackUrl + "\">Forgot password</a> <br> If you did not send the request, " 
+                                   + "please <b> ignore </b> the message.</body></html>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
             }

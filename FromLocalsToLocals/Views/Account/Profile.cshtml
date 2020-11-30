@@ -54,7 +54,8 @@
                 <input asp-for="UserName" class="form-control" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary" name="submitBtn" value="accDetails">@_localizer["Save changes"]</button>
+            <button type="submit" class="btn btn-primary" name="submitBtn" value="accDetails"
+                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Save changes"]</button>
             <hr />
         </form>
         <h3 class="mt-3">@_localizer["Password settings"]</h3>
@@ -74,7 +75,9 @@
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary mt-3" name="submitBtn" value="password">@_localizer["Change password"]</button>
+            <button type="submit" class="btn btn-primary mt-3"
+                    name="submitBtn" value="password"
+                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Change password"]</button>
 </form>
     </div>
 </div>

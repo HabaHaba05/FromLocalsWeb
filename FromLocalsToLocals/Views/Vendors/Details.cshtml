@@ -6,8 +6,11 @@
     ViewData["Title"] = _localizer["Details"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var userForFeed = await  userManager.Users.Include(x=>x.Vendors).FirstOrDefaultAsync(x => x.Id == userManager.GetUserId(User));
-    if (userForFeed.Id != Model.User.Id) userForFeed = null;
+    var userForFeed = await userManager.Users.Include(x => x.Vendors).FirstOrDefaultAsync(x => x.Id == userManager.GetUserId(User));
+
+    if (userForFeed == null) { userForFeed = null; }
+    else if (userForFeed.Id != Model.User.Id) { userForFeed = null; }
+
 
 
 }
@@ -42,7 +45,7 @@
                 <h2>@Model.Title</h2>
             </div>
             <div class="row mb-3">
-                <p>@_localizer["Service registered |"]@CalcRelativeTime(Model.DateCreated)</p>
+                <p>@_localizer["Service registered: "]@CalcRelativeTime(Model.DateCreated)</p>
             </div>
             <hr />
             <div class="row">

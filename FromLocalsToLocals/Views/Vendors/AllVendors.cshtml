@@ -142,11 +142,15 @@ else
                     {
                         if (user.Folllowing.Any(x => x.VendorID == vendor.ID))
                         {
-                            <button data-follow="false" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Unfollow</button>
+                            <button data-follow="false" class="btn btn-primary w-100 followBtn" 
+                                    onclick="followBtnClick(this,@vendor.ID)"
+                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;" >Unfollow</button>
                         }
                         else
                         {
-                            <button data-follow="true" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Follow</button>
+                            <button data-follow="true" class="btn btn-primary w-100 followBtn" 
+                                    onclick="followBtnClick(this,@vendor.ID)"
+                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Follow</button>
                         }
                     }
                 </div>
@@ -159,7 +163,9 @@ else
 <h2 class="mt-4" style="text-align: center; font-size: 30px;"> @_localizer["All Services"]</h2>
 <hr />
 <form asp-action="AllVendors" method="get" class="container-fluid">
-    <select asp-for="VendorType" asp-items="Model.Types" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    <select asp-for="VendorType" asp-items="Model.Types"
+            class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+            style="background-color: #CCBA8B; border: 2px #CCBA8B;">
         <option value="">@_localizer["All"]</option>
     </select>
     <select asp-for="OrderType" asp-items="Model.OrderTypes" class="btn btn-primary dropdown-toggle"
@@ -270,11 +276,15 @@ else
                     {
                         if (user.Folllowing.Any(x => x.VendorID == Model.Vendors[i * itemsInRow + j].ID))
                         {
-                            <button data-follow="false" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Unfollow</button>
+                            <button data-follow="false" class="btn btn-primary w-100 followBtn" 
+                                    onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)"
+                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Unfollow</button>
                         }
                         else
                         {
-                            <button data-follow="true" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Follow</button>
+                            <button data-follow="true" class="btn btn-primary w-100 followBtn"
+                                    onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)"
+                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Follow</button>
                         }
                     }
                 </div>

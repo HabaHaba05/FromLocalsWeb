@@ -91,7 +91,7 @@ namespace FromLocalsToLocals.Controllers
             {
                 var commentId = int.Parse(Request.Form["listItemCount"]);
                 var stars     = int.Parse(Request.Form["starRating"]);
-                var userName = (user != null) ? user.UserName : "Anonimas";
+                var userName = (user != null) ? user.UserName : "Anonym";
                 var review = new Review(id, commentId, userName, Request.Form["comment"], stars , vendor.Title);
 
             }

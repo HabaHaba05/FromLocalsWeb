@@ -12,9 +12,10 @@
 <h2 class="mt-4" style="text-align: center;" id="myservices">@_localizer["My Services"]</h2>
 <hr />
 
-<p>
-    <a class="btn btn-primary mt-3 mb-3" asp-action="Create"><span class="fa fa-plus"></span>@_localizer["Add a service"]</a>
+<p style="text-align: center;">
+    <a class="btn btn-success mt-3 mb-3" asp-action="Create"><span class="fa fa-plus"></span>@_localizer["Add a service"]</a>
 </p>
+
 
 <table class="table" id="Table1">
 
@@ -47,9 +48,9 @@
                     @Html.DisplayFor(modelItem => item.VendorTypeDb)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">@_localizer["Edit"]</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">@_localizer["Details"]</a> |
-                    <a href="#" data-target="#deleteModal" data-toggle="modal" class="identifyingClass" data-title="@item.Title" data-id="@item.ID">@_localizer["Delete"]</a>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.ID">@_localizer["Edit"]</a> 
+                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.ID">@_localizer["Details"]</a> 
+                    <a href="#" data-target="#deleteModal" data-toggle="modal" class="identifyingClass btn btn-primary" data-title="@item.Title" data-id="@item.ID">@_localizer["Delete"]</a>
                 </td>
             </tr>
         }
@@ -82,6 +83,4 @@
             })
         });
     </script>
-
-
 
