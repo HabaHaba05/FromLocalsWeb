@@ -10,6 +10,8 @@ namespace FromLocalsToLocals.Models
         public byte[] Image { get; set; }
         public int VendorsCount { get; set; }
 
+        public bool Subscribe { get; set; }
+
         public virtual ICollection<Vendor> Vendors { get; set; }
         public  ICollection<Follower> Folllowing { get; set; }
 

@@ -12,7 +12,6 @@ namespace FromLocalsToLocals.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
     }
 
@@ -48,15 +47,15 @@ namespace FromLocalsToLocals.ViewModels
         {
 
         }
-        public ProfileVM(string email, string username, byte[] img)
+        public ProfileVM(string email, string username, byte[] img, bool subscribe)
         {
             Email = email;
             UserName = username;
             Image = img;
+            Subscribe = subscribe;
         }
 
         [DataType(DataType.EmailAddress)]
-        [Display(Name ="Email")]
         public string Email { get; set; }
 
         public string UserName { get; set; }
@@ -66,16 +65,15 @@ namespace FromLocalsToLocals.ViewModels
         public IFormFile ImageFile { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Current password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
         public string ConfirmPassword { get; set; }
+
+        public bool Subscribe { get;  set; }
     }
 
     public class ResetPasswordVM

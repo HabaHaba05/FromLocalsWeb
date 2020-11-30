@@ -433,7 +433,7 @@ namespace FromLocalsToLocals.Controllers
 
         public static ProfileVM GetNewProfileVM(AppUser user)
         {
-            return new ProfileVM(user.Email, user.UserName, user.Image);
+            return new ProfileVM(user.Email, user.UserName, user.Image, user.Subscribe);
         }
         #endregion
 
