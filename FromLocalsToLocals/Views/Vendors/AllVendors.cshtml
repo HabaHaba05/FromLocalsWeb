@@ -16,7 +16,7 @@
     var itemCount = Html.ViewContext.HttpContext.Request.Query["itemCount"];
     var itemCountDouble = (!string.IsNullOrEmpty(itemCount)) ? double.Parse(itemCount) : 20;
 
-    var user = await usermanager.Users.Include(x => x.Vendors).Include(x=>x.Folllowing).FirstOrDefaultAsync(x => x.Id == usermanager.GetUserId(User));
+    var user = await usermanager.GetUserAsync(User);
 }
 
 <head>
@@ -49,7 +49,7 @@ else
     <div class="row" style="background-color: #CCBA8B;">
         @foreach (var vendor in Model.NewVendors)
         {
-            <div class="col-sm-@(12 / itemsInRow) mb-3 mt-3">
+            <div class="col-sm-@(12 / itemsInRow) mb-3 mt-3 d-flex justify-content-center">
                 <div class="card" style="width:inherit; height:inherit; background-color: #F7F7F7;">
                     @if (vendor.Image == null)
                     {
@@ -59,101 +59,101 @@ else
                     {
                         <img src="data:image;base64,@System.Convert.ToBase64String(vendor.Image)" class="mt-3" style="width:160px; height: 150px; border-radius: 50%; align-self:center;" />
                     }
-                <div class="card-body">
-                    <h5 class="card-title" style="margin:0px;">@vendor.Title</h5>
-                    <hr />
-                    @switch (vendor.VendorTypeDb)
-                    {
-                        case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
-                        break;
+                    <div class="card-body">
+                        <h5 class="card-title" style="margin:0px;">@vendor.Title</h5>
+                        <hr />
+                        @switch (vendor.VendorTypeDb)
+                        {
+                            case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
+                            break;
 
-                    default: <p class="text-muted text-uppercase">@vendor.VendorTypeDb</p>
-                    break;
-            }
-                    <hr />
-                    @if (vendor.ReviewsCount.Sum() == 0)
-                    {
-                        <p class="font-italic">@_localizer["No Reviews"]</p>
-                    }
-                    else
-                    {
-                        @switch (@Math.Round(vendor.Average))
+                        default: <p class="text-muted text-uppercase">@vendor.VendorTypeDb</p>
+                        break;
+                }
+                        <hr />
+                        @if (vendor.ReviewsCount.Sum() == 0)
                         {
-                            case 5:
-                                <p class="ml-3 ">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span>@vendor.Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 4:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@vendor.Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 3:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@vendor.Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 2:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@vendor.Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            default:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@vendor.Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                        }
-                    }
-                    <hr />
-                    <div class="navbar" style="align-content:center">
-                        <a asp-route-id="@vendor.ID" asp-controller="Vendors" asp-action="Details"
-                           class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Read More"]</a>
-                        <a asp-route-id="Vendor/@vendor.ID" asp-controller="Reviews" asp-action="Reviews"
-                           class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Reviews"]</a>
-                    </div>
-                    @if (user != null && !user.Vendors.Any(x => x.ID == vendor.ID))
-                    {
-                        if (user.Folllowing.Any(x => x.VendorID == vendor.ID))
-                        {
-                            <button data-follow="false" class="btn btn-primary w-100 followBtn" 
-                                    onclick="followBtnClick(this,@vendor.ID)"
-                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;" >Unfollow</button>
+                            <p class="font-italic">@_localizer["No Reviews"]</p>
                         }
                         else
                         {
-                            <button data-follow="true" class="btn btn-primary w-100 followBtn" 
-                                    onclick="followBtnClick(this,@vendor.ID)"
-                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Follow</button>
+
+                            @switch (@Math.Round(vendor.Average))
+                            {
+                                case 5:
+                                    <p class="ml-3 ">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span>@vendor.Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 4:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@vendor.Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 3:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@vendor.Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 2:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@vendor.Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                default:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@vendor.Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                            }
+
                         }
-                    }
-                </div>
+                        <hr />
+                        <div class="navbar" style="align-content:center">
+                            <a asp-route-id="@vendor.ID" asp-controller="Vendors" asp-action="Details"
+                               class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Read More"]</a>
+                            <a asp-route-id="Vendor/@vendor.ID" asp-controller="Reviews" asp-action="Reviews"
+                               class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Reviews"]</a>
+                        </div>
+                        @if (user != null && !user.Vendors.Any(x => x.ID == vendor.ID))
+                        {
+
+                            if (user.Following.Any(x => x.VendorID == vendor.ID))
+                            {
+                                <button data-follow="false" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Unfollow</button>
+                            }
+                            else
+                            {
+                                <button data-follow="true" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Follow</button>
+                            }
+
+                        }
+                    </div>
                 </div>
             </div>
         }
@@ -162,28 +162,41 @@ else
 }
 <h2 class="mt-4" style="text-align: center; font-size: 30px;"> @_localizer["All Services"]</h2>
 <hr />
-<form asp-action="AllVendors" method="get" class="container-fluid">
-    <select asp-for="VendorType" asp-items="Model.Types"
-            class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-            style="background-color: #CCBA8B; border: 2px #CCBA8B;">
-        <option value="">@_localizer["All"]</option>
-    </select>
-    <select asp-for="OrderType" asp-items="Model.OrderTypes" class="btn btn-primary dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-        <option value="">@_localizer["Random"]</option>
-    </select>
-    <input type="text" class="m-3" name="searchString" placeholder=@_localizer["Title"] />@_localizer["Items per page:"]
-    <input type="number" class="m-3" min="1" max="50" name="itemCount" value=@itemCountDouble />
-    <input class="btn btn-primary" style="float:right; width: 100px;" type="submit" value=@_localizer["Filter"] />
-</form>
+
+<p>
+    <a type="button" data-toggle="collapse" href="#serviceFilter" role="button" aria-expanded="false" aria-controls="serviceFilter" style="color: black; font-size: 19px;">
+        <img src="~/Assets/filter.png" class="mr-2" style="width:30px; height:30px;" /> Filters
+    </a>
+</p>
+<div class="collapse" id="serviceFilter">
+    <form asp-action="AllVendors" method="get" class="container-fluid">
+        <div class="row">
+            <select asp-for="VendorType" asp-items="Model.Types" class="btn btn-primary dropdown-toggle m-3" data-toggle="dropdown">
+                <option value="">@_localizer["All"]</option>
+            </select>
+            <select asp-for="OrderType" asp-items="Model.OrderTypes" class="btn btn-primary dropdown-toggle m-3"
+                    data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <option value="">@_localizer["Random"]</option>
+            </select>
+        </div>
+        <div class="row">
+            <input type="text" class="m-3" name="searchString" placeholder=@_localizer["Title"] /><p class="mt-3">@_localizer["Items per page:"]</p>
+            <input type="number" class="mb-3 mt-3" min="1" max="50" name="itemCount" value=@itemCountDouble style="width: 50px;" />
+        </div>
+        <div class="row">
+            <input class="btn btn-primary m-3" style="float:right; width: 100px;" type="submit" value=@_localizer["Filter"] />
+        </div>
+    </form>
+</div>
+
 <hr />
 @for (int i = 0; i < rows; i++)
 {
     <div class="row">
         @for (int j = 0; j < itemsInRow && i * itemsInRow + j < vendorCount; j++)
         {
-            <div class="col-sm-@(12/itemsInRow) mb-2 ">
+            <div class="col-sm-@(12/itemsInRow) mb-2 d-flex justify-content-center">
                 <div class="card" style="width:inherit; height:inherit; background-color: #F7F7F7;">
                     @if (Model.Vendors[i * itemsInRow + j].Image == null)
                     {
@@ -193,101 +206,101 @@ else
                     {
                         <img src="data:image;base64,@System.Convert.ToBase64String(Model.Vendors[i * itemsInRow + j].Image)" class="mt-3" style="width:160px; height: 150px; border-radius: 50%; align-self:center;" />
                     }
-                <div class="card-body">
-                    <h5 class="card-title" style="margin:0px;">@Model.Vendors[i * itemsInRow + j].Title</h5>
-                    <hr />
-                    @switch (Model.Vendors[i * itemsInRow + j].VendorTypeDb)
-                    {
-                        case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
-                        break;
+                    <div class="card-body">
+                        <h5 class="card-title" style="margin:0px;">@Model.Vendors[i * itemsInRow + j].Title</h5>
+                        <hr />
+                        @switch (Model.Vendors[i * itemsInRow + j].VendorTypeDb)
+                        {
+                            case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
+                            break;
 
-                    default: <p class="text-muted text-uppercase">@Model.Vendors[i * itemsInRow + j].VendorTypeDb</p>
-                    break;
-            }
-                    <hr />
-                    @if (Model.Vendors[i * itemsInRow + j].ReviewsCount.Sum() == 0)
-                    {
-                        <p class="font-italic">@_localizer["No Reviews"]</p>
-                    }
-                    else
-                    {
-                        @switch (@Math.Round(Model.Vendors[i * itemsInRow + j].Average))
+                        default: <p class="text-muted text-uppercase">@Model.Vendors[i * itemsInRow + j].VendorTypeDb</p>
+                        break;
+                }
+                        <hr />
+                        @if (Model.Vendors[i * itemsInRow + j].ReviewsCount.Sum() == 0)
                         {
-                            case 5:
-                                <p class="ml-3 ">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 4:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 3:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            case 2:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                            default:
-                                <p class="ml-3">
-                                    <span class="fa fa-star checked"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span class="fa fa-star"></span>
-                                    <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
-                                </p>
-                                break;
-                        }
-                    }
-                    <hr />
-                    <div class="navbar" style="align-content:center">
-                        <a asp-route-id="@Model.Vendors[i * itemsInRow + j].ID" asp-controller="Vendors" asp-action="Details"
-                           class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Read More"]</a>
-                        <a asp-route-id="Vendor/@Model.Vendors[i * itemsInRow + j].ID" asp-controller="Reviews" asp-action="Reviews"
-                           class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Reviews"]</a>
-                    </div>
-                    @if (user != null && !user.Vendors.Any(x => x.ID == Model.Vendors[i * itemsInRow + j].ID))
-                    {
-                        if (user.Folllowing.Any(x => x.VendorID == Model.Vendors[i * itemsInRow + j].ID))
-                        {
-                            <button data-follow="false" class="btn btn-primary w-100 followBtn" 
-                                    onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)"
-                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Unfollow</button>
+                            <p class="font-italic">@_localizer["No Reviews"]</p>
                         }
                         else
                         {
-                            <button data-follow="true" class="btn btn-primary w-100 followBtn"
-                                    onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)"
-                                    style="background-color: #CCBA8B; border: 2px #CCBA8B;">Follow</button>
+
+                            @switch (@Math.Round(Model.Vendors[i * itemsInRow + j].Average))
+                            {
+                                case 5:
+                                    <p class="ml-3 ">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 4:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 3:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                case 2:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                                default:
+                                    <p class="ml-3">
+                                        <span class="fa fa-star checked"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span class="fa fa-star"></span>
+                                        <span>@Model.Vendors[i * itemsInRow + j].Average.ToString("0.0")</span>
+                                    </p>
+                                    break;
+                            }
+
                         }
-                    }
-                </div>
+                        <hr />
+                        <div class="navbar" style="align-content:center">
+                            <a asp-route-id="@Model.Vendors[i * itemsInRow + j].ID" asp-controller="Vendors" asp-action="Details"
+                               class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Read More"]</a>
+                            <a asp-route-id="Vendor/@Model.Vendors[i * itemsInRow + j].ID" asp-controller="Reviews" asp-action="Reviews"
+                               class="btn btn-primary" style="background-color: #CCBA8B; border: 2px #CCBA8B;">@_localizer["Reviews"]</a>
+                        </div>
+                        @if (user != null && !user.Vendors.Any(x => x.ID == Model.Vendors[i * itemsInRow + j].ID))
+                        {
+
+                            if (user.Following.Any(x => x.VendorID == Model.Vendors[i * itemsInRow + j].ID))
+                            {
+                                <button data-follow="false" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Unfollow</button>
+                            }
+                            else
+                            {
+                                <button data-follow="true" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Follow</button>
+                            }
+
+                        }
+                    </div>
                 </div>
             </div>
         }
@@ -310,11 +323,10 @@ else
 </ul>
 
 <script>
-    
-    function followBtnClick(obj,id) {
+    function followBtnClick(obj, id) {
         $.ajax({
             type: "POST",
-            url: '/Follower/' + obj.innerText+'/' + id,
+            url: '/Follower/' + obj.innerText + '/' + id,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (m) {
@@ -328,12 +340,9 @@ else
                     alert("Error occured when trying to " + obj.innerText + " vendor");
                 }
             },
-            error: function(e) {
+            error: function (e) {
                 alert("Error occured when trying to " + obj.innerText + " vendor");
             }
         });
     }
-
-
-
 </script>

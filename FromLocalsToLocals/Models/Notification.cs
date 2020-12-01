@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace FromLocalsToLocals.Models
@@ -18,7 +20,9 @@ namespace FromLocalsToLocals.Models
         public DateTime CreatedDate { get; set; }
         public string NotiBody { get; set; }
 
-        public Review Review { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual Review Review { get; set; }
 
         [NotMapped]
         public bool IsRead { get; set; } = false;

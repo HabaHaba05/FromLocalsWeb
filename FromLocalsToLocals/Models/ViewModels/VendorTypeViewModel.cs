@@ -12,7 +12,6 @@ namespace FromLocalsToLocals.Models
         public string OrderType { get; set; }
         public string VendorType { get; set; }
         public string SearchString { get; set; }
-
         public List<Vendor> NewVendors { get; set; }
     }
 }

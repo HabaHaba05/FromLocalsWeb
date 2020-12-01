@@ -54,7 +54,7 @@ info.onAdd = function (map) {
 info.update = function (props) {
     this._div.innerHTML = props ? (props.picture ? `<div ><button type = 'button' id='mygtukas' class='boxclose' onClick='closeInfoTab()'></button><img src='data:image;base64,${props.picture}' height='100px' width='100%'/><div><hr>
             <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>` : `<div ><button type = 'button' id='mygtukas' class='boxclose' onClick='closeInfoTab()'></button><img src='/../Assets/appLogo.png' width='100%'/><div><hr>
-                     <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>`) : '<span style="color:#916814">Select vendor</span>';
+                     <h4>${props.title}</h4><br><a href='/Vendors/Details/${props.id}'>Read More</a>`) : '<span style="color:#916814; margin-bottom: 40px;">Select vendor</span>';
 
 };
 

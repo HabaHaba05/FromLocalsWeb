@@ -77,7 +77,6 @@
                     </ul>
                 </div>
             </nav>
-
             <div class="row mt-3 mb-3" id="map" style="height:250px;">
 
                 <p><b>@_localizer["Address:&nbsp;"]</b>@Model.Address</p>
@@ -85,7 +84,7 @@
             </div>
 
             <div class="row mt-3 mb-3" id="feed" style="display:none">
-                @await Component.InvokeAsync("NewsFeed", new FromLocalsToLocals.Models.ViewModels.PostVM { ActiveTab = FromLocalsToLocals.Models.ViewModels.Tab.VendorFeed, DisplayInDetails = true, SelectedVendor = Model, User = userForFeed});
+                @await Component.InvokeAsync("NewsFeed", new FromLocalsToLocals.Models.ViewModels.PostVM { ActiveTab = FromLocalsToLocals.Models.ViewModels.Tab.VendorFeed, DisplayInDetails = true, SelectedVendor = Model, User = userForFeed})
             </div>
 
         </div>

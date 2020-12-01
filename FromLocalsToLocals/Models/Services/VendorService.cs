@@ -64,7 +64,7 @@ namespace FromLocalsToLocals.Models.Services
         }
         public async Task<Vendor> GetVendorAsync(int id)
         {
-            return await _context.Vendors.Include(x=> x.User).FirstOrDefaultAsync(m => m.ID == id);
+            return await _context.Vendors.FirstOrDefaultAsync(m => m.ID == id);
         }
 
         public async Task<List<Vendor>> GetVendorsAsync(string searchString="", string vendorType="")

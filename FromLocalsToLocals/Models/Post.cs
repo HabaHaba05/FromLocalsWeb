@@ -1,7 +1,9 @@
 ﻿using FromLocalsToLocals.Models.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace FromLocalsToLocals.Models
 {
@@ -30,7 +32,9 @@ namespace FromLocalsToLocals.Models
         public byte[] Image { get; set; }
 
         [ForeignKey("VendorID")]
-        public Vendor Vendor { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual Vendor Vendor { get; set; }
 
     }
 }

@@ -16,7 +16,7 @@
                     <footer class="text-center">
                         <a class="btn btn-danger" role="button" asp-area="" asp-controller="Vendors" asp-action="AllVendors" style="width: 130px;">@_localizer["Go"]</a>
                         <a class="btn btn-outline-danger" role="button" asp-area="" asp-controller="Home" asp-action="AboutUs" style="width: 130px;">@_localizer["Read More"]</a>
-</footer>
+                    </footer>
                 </div>
             </section>
         </div>
@@ -24,43 +24,13 @@
     <p id="mapTitle" class="mt-3"></p>
     <p class="text-center font-weight-bold mt-lg-5" style="font-size: 20px;">@_localizer["Discover all nearby vendors with just a few clicks."]</p>
     <div class="container">
-        <div class="row mb-3">
+        <div class="row mb-3 justify-content-center d-flex">
             @Html.Partial("_Map", Model)
         </div>
     </div>
     <p class="text-center font-weight-bold mb-3 mt-lg-5" style="font-size: 20px;">@_localizer["Experience all the finest products around you."]</p>
     <hr />
-    <div class="container w-50">
-        <div class="row">
-            <div class="col">
-                <div class="card" style="background-color: transparent;">
-                    <div class="card-body">
-                        <p class="text-center">
-                            <img src="~/Assets/home.png" style="width: 43%; height: 43%;" />
-                        </p>
-                        <p class="text-center">@_localizer["Get to know the locals"]</p>
-                        <p class="text-center">
-                            <a id="discover" class="btn btn-outline-secondary" role="button" style="width: 130px;">@_localizer["Discover"]</a>
-</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card" style="background-color: transparent;">
-                    <div class="card-body">
-                        <p class="text-center">
-                            <img src="~/Assets/hands.png" style="width: 50%; height: 50%;" />
-                        </p>
-                        <p class="text-center">@_localizer["Register your initiative"]</p>
-                        <p class="text-center">
-                            <a class="btn btn-outline-secondary" role="button" style="width: 130px;" asp-controller="Account" asp-action="Register">@_localizer["Join"]</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <hr />
+    <!--Think of smth to put here instead of deleted cards-->
     <div class="card, form-inline">
         <div class="card-body">
             <blockquote class="blockquote mb-0">
@@ -70,4 +40,3 @@
         </div>
     </div>
 </body>
-<script src="~/js/homeIndex.js"></script>

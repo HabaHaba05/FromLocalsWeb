@@ -129,8 +129,8 @@
   <data name="FAQ" xml:space="preserve">
     <value>DUK</value>
   </data>
-  <data name="Found a bug ?" xml:space="preserve">
-    <value>Radote klaidą?</value>
+  <data name="Found a bug?" xml:space="preserve">
+    <value>Radote klaidą? </value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Pradinis</value>

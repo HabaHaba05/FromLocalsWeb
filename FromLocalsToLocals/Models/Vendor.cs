@@ -64,8 +64,17 @@ namespace FromLocalsToLocals.Models
         [IgnoreDataMember]
         [ForeignKey("UserID")]
         public virtual AppUser User { get; set; }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Review> Reviews { get; set; }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Post> Posts { get; set; }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<Follower> Followers { get; set; }
 
 

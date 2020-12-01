@@ -1,9 +1,11 @@
 ﻿using FromLocalsToLocals.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace FromLocalsToLocals.Models
@@ -51,9 +53,13 @@ namespace FromLocalsToLocals.Models
         public string ReplyDate { get; set; }
 
         [ForeignKey("VendorID")]
-        public Vendor Vendor { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual Vendor Vendor { get; set; }
 
-        public ICollection<Notification> Notifications { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual ICollection<Notification> Notifications { get; set; }
 
         public bool Equals([AllowNull] Review other)
         {

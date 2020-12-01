@@ -9,7 +9,7 @@
     <link href="~/css/revealEyeLogin.css" rel="stylesheet" type="text/css">
 </head>
 <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog cascading-modal" role="document">
+    <div class="modal-dialog cascading-modal" role="document" style="margin-top: 100px;">
         <div class="modal-content">
             <div class="modal-c-tabs">
                 <ul class="nav nav-tabs md-tabs tabs-2 light-blue darken-3" role="tablist">
@@ -61,7 +61,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <div class="checkbox">
-                                                <input asp-for="RememberMe" />@_localizer["Remember me"]
+                                                <input asp-for="RememberMe" /> @_localizer["Remember me"]
                                             </div>
                                         </div>
                                     </div>
@@ -82,12 +82,9 @@
     </div>
 </div>
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
 </script>
 <script src="bootstrap/js/bootstrap.min.js"></script>
-
-
 
 <script type="text/javascript">
     $(function () {

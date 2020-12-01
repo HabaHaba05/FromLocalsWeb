@@ -1,5 +1,8 @@
 ﻿
 
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
+
 namespace FromLocalsToLocals.Models
 {
     public class Follower
@@ -14,9 +17,15 @@ namespace FromLocalsToLocals.Models
         }
 
         public string UserID { get; set; }
-        public AppUser User { get; set; }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual AppUser User { get; set; }
 
         public int VendorID { get; set; }
-        public Vendor Vendor { get; set; }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public virtual Vendor Vendor { get; set; }
     }
 }

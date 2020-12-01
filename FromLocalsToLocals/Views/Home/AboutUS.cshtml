@@ -4,17 +4,17 @@
     ViewData["Title"] = _localizer["About Us"];
 }
 
-<h1 class="mt-4" style="text-align: center; font-size: 30px;">@_localizer["About Us"]</h1>
+<h2 class="mt-4" style="text-align: center; font-size: 30px;">@_localizer["About Us"]</h2>
 <hr />
 
 <div class="container-fluid">
-    <div class="col-6">
-        <p style="float: left;"> <img src="~/Assets/vendor.png" class="rounded float-left" style="height: 250px; width: 550px"></p>
-    </div>
-    <div class="col">
-        <p style="margin: 10px; font-size: 18px;">
+    <div class="row">
+        <div class="col text-justify">
             @_localizer["Our aim to support local vendors, both during and after the coronavirus crisis. We seek to prove that local vendors offer the same price and quality for products also offered by big companies."]
             @_localizer["We want to remind people of their local sellers and introduce them to newcomers."]
-        </p>
+        </div>
+        <div class="col-6 mb-4">
+            <img src="~/Assets/helping.png" style="width:inherit; max-height: 600px;" />
+        </div>
     </div>
 </div>

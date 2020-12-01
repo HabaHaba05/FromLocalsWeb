@@ -6,21 +6,41 @@
 <html>
 <head>
     <link href='//fonts.googleapis.com/css?family=Open+Sans:700,600' rel='stylesheet' type='text/css'>
-    <link href="~/css/reportbug.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div id="absoluteCenteredDiv">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="box">
-                <h2>@_localizer["Report a bug"]</h2>
-                <div class="form-group">
-                    <textarea asp-for="TextBug" class="form-control" rows="10" placeholder=@_localizer["Give us details about a bug..."] maxlength="400"></textarea>
+    <div class="container">
+        <div class="modal fade" id="modalForm" role="dialog">
+            <div class="modal-dialog" style="margin-top: 50px;">
+                <div class="modal-content">
+                    <div class="row">
+                        <div class="col d-flex justify-content-center">
+                            <div class="card" style="width: 100%;">
+                                <div class="modal-header" style="background-color: lightgray;">
+                                    <h2 class="text-center mr-2">@_localizer["Report a bug"]</h2>
+                                    <img src="~/Assets/reportBug.png" class="mt-1" style="width: 30px; height: 30px;"/>
+                                    <a class="close" type="button" asp-controller="Home" asp-action="Index">&times;</a>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        <div asp-validation-summary="All" class="text-danger"></div>
+                                        <div class="form-group">
+                                            <textarea asp-for="TextBug" class="form-control" rows="10" placeholder=@_localizer["Give us details about a bug..."] maxlength="400"></textarea>
+                                        </div>
+                                        <button class="btn btn-success" type="submit" style="float: right;">@_localizer["Submit"]</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="button" type="submit">@_localizer["Submit"]</button>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>
+<script type="text/javascript">
+    $(function () {
+        $('#modalForm').modal('show');
+    });
+</script>

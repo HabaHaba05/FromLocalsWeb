@@ -27,7 +27,7 @@ namespace FromLocalsToLocals.Controllers
         public async Task<IActionResult> Follow(int? id)
         {
 
-            var user = await _userManager.Users.Include(x => x.Folllowing).FirstOrDefaultAsync(x=> x.Id==_userManager.GetUserId(User));
+            var user = await _userManager.Users.FirstOrDefaultAsync(x=> x.Id==_userManager.GetUserId(User));
 
             if (id == null || user == null)
             {
@@ -38,7 +38,7 @@ namespace FromLocalsToLocals.Controllers
             var follower = new Follower(user, vendor);
             try
             {
-                user.Folllowing.Add(follower);
+                user.Following.Add(follower);
                 await _userManager.UpdateAsync(user);
             }
             catch(Exception ex)
@@ -52,18 +52,18 @@ namespace FromLocalsToLocals.Controllers
         [HttpPost]
         public async Task<IActionResult> Unfollow(int? id)
         {
-            var user = await _userManager.Users.Include(x => x.Folllowing).FirstOrDefaultAsync(x=> x.Id == _userManager.GetUserId(User));
+            var user = await _userManager.Users.FirstOrDefaultAsync(x=> x.Id == _userManager.GetUserId(User));
 
             if (id == null || user == null)
             {
                 return Json(new { success = false });
             }
 
-            var followingVendor = user.Folllowing.FirstOrDefault(x => x.VendorID == id);
+            var followingVendor = user.Following.FirstOrDefault(x => x.VendorID == id);
 
             try
             {
-                user.Folllowing.Remove(followingVendor);
+                user.Following.Remove(followingVendor);
                 await _userManager.UpdateAsync(user);
             }
             catch (Exception ex)

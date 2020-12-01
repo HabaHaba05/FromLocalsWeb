@@ -10,8 +10,8 @@ namespace FromLocalsToLocals.Migrations
                 name: "Followers",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(nullable: false),
-                    VendorID = table.Column<int>(nullable: false)
+                    UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    VendorID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,7 +27,7 @@ namespace FromLocalsToLocals.Migrations
                         column: x => x.VendorID,
                         principalTable: "Vendors",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

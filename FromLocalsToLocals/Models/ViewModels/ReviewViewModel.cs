@@ -9,9 +9,7 @@ namespace FromLocalsToLocals.Models
     public class ReviewViewModel
     {
         public Vendor Vendor { get; set; }
-
         public IEnumerable<Tuple<Review,byte[]>> Reviews { get; set; }
-
     }
 }
 

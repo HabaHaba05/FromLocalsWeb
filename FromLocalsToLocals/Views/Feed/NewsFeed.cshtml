@@ -9,8 +9,8 @@
         </button>
         <div class="collapse navbar-collapse myNav" id="navbarNav">
             @if(signinManager.IsSignedIn(User)){
-            <a class="text-center" style="font-size: 19px;width:50%;" asp-route-tabname="MyFeed" asp-controller="Home" asp-action="SwitchTabs">My Feed</a>
-            <a class="text-center" style="font-size: 19px;width:50%;" asp-route-tabname="AllFeed" asp-controller="Home" asp-action="SwitchTabs">All Feed</a>
+            <a class="text-center nav-link" style="font-size: 19px; width:50%;" asp-route-tabname="MyFeed" asp-controller="Feed" asp-action="SwitchTabs">My Feed</a>
+            <a class="text-center nav-link" style="font-size: 19px; width:50%;" asp-route-tabname="AllFeed" asp-controller="Feed" asp-action="SwitchTabs">All Feed</a>
             }
         </div>
     </nav>

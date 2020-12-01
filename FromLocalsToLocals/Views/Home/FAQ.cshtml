@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = _localizer["FAQ"];
 }
-<h1 class="mt-4" style="text-align: center; font-size: 30px;"> @_localizer["Frequently asked questions (FAQ)"]</h1>
+<h2 class="mt-4" style="text-align: center; font-size: 30px;"> @_localizer["Frequently asked questions (FAQ)"]</h2>
 <hr />
 
 <!-- Question expanders -->
@@ -12,14 +12,14 @@
     <div class="card">
         <div class="card-header" id="headingOne">
             <h5 class="mb-0">
-                <button class="btn btn-secondary collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="btn btn-secondary collapsed text-left" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <strong>@_localizer["Q: How many services can I register?"]</strong>
             </button>
             </h5>
         </div>
 
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
+            <div class="card-body text-justify">
                 @_localizer["A: The amount of services that one can register is unlimited. If you are registered as a vendor, in the home screen select 'Add service'. If not, first create an account by clicking the image in the home screen in the top right corner."]
             </div>
         </div>
@@ -27,13 +27,13 @@
     <div class="card">
         <div class="card-header" id="headingTwo">
             <h5 class="mb-0">
-                <button class="btn btn btn-secondary collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <button class="btn btn btn-secondary collapsed text-left" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     <strong>@_localizer["Q: Can I review vendors?"]</strong>
             </button>
             </h5>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
+            <div class="card-body text-justify">
                 @_localizer["A: Yes you can! On a map in the home screen, select a pin of service which you want to review. A panel of infomation about that service should appear on the right. Then, at the bottom click the button on the far right."]
             </div>
         </div>
@@ -41,13 +41,13 @@
     <div class="card">
         <div class="card-header" id="headingThree">
             <h5 class="mb-0">
-                <button class="btn btn-secondary collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <button class="btn btn-secondary collapsed text-left" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     <strong>@_localizer["Q: Where can I find a list of available services?"]</strong>
             </button>
             </h5>
         </div>
         <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-            <div class="card-body">
+            <div class="card-body text-justify">
                 @_localizer["A: On the home screen select a tab called 'All Services'. There you will be able to see all the available services."]
             </div>
         </div>
@@ -55,13 +55,13 @@
     <div class="card">
         <div class="card-header" id="headingFour">
             <h5 class="mb-0">
-                <button class="btn btn-secondary collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <button class="btn btn-secondary collapsed text-left" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     <strong>@_localizer["Q: Do I need to register in order to review a service?"]</strong>
             </button>
             </h5>
         </div>
         <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
-            <div class="card-body">
+            <div class="card-body text-justify">
                 @_localizer["A: No, you don't. Anyone can review a certain service, but only the owner can reply to those reviews."]
             </div>
         </div>
