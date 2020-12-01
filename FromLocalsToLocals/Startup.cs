@@ -24,6 +24,8 @@ using System.Globalization;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Localization;
 using SendGridAccount = FromLocalsToLocals.Utilities.SendGridAccount;
+using Quartz;
+using Quartz.Impl;
 
 namespace FromLocalsToLocals
 {
@@ -93,6 +95,7 @@ namespace FromLocalsToLocals
 
             services.AddSignalR();
 
+   
         }
 
 

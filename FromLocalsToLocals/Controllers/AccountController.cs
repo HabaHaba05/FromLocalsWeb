@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
@@ -19,6 +20,7 @@ using SendGrid.Helpers.Mail;
 using SuppLocals;
 using SendGridAccount = FromLocalsToLocals.Utilities.SendGridAccount;
 
+
 namespace FromLocalsToLocals.Controllers
 {
     public class AccountController : Controller
@@ -29,6 +31,7 @@ namespace FromLocalsToLocals.Controllers
         private readonly IToastNotification _toastNotification;
         private readonly SendGridAccount _userOptions;
         private readonly IStringLocalizer<AccountController> _localizer;
+        
 
         delegate bool MyPredicate<in T>(T arg);
 
@@ -132,16 +135,18 @@ namespace FromLocalsToLocals.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Profile(string submitBtn, ProfileVM model)
+        public async Task<IActionResult> Profile(string submitBtn, ProfileVM model, Vendor vendor)
         {
             return submitBtn switch
             {
                 "picName" => await PicChange(model),
                 "accDetails" => await AccountDetailsChange(model),
                 "password" => await ChangePassword(model),
+                "subscriber" => await SubscribeNewsletter(model, vendor),
                 _ => View(),
             };
         }
+
 
         private async Task<IActionResult> AccountDetailsChange(ProfileVM model)
         {
@@ -190,6 +195,77 @@ namespace FromLocalsToLocals.Controllers
             CheckForErrors(resultsList);
             return Profile();
         }
+
+
+        private async Task<IActionResult> SubscribeNewsletter(ProfileVM model, Vendor vendor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
+
+            var nx = _context.Vendors;
+
+            var oldModel = GetNewProfileVM(user);
+            var resultsList = new List<IdentityResult>();
+            StringBuilder msg = new StringBuilder();
+
+
+            if (user.Subscribe == true)
+            {
+                user.Subscribe = false;
+                _toastNotification.AddInfoToastMessage("Newsletter unsubscribed!");
+            }
+            else
+            {
+                user.Subscribe = true;
+                _toastNotification.AddSuccessToastMessage("Newsletter subscribed!");
+            }
+
+            if (nx == null)
+            {
+                msg.Append("At this time there is not new vendors");
+            }
+            else
+            {
+                foreach (var vendory in nx)
+                {
+
+                    if (vendory.Title.Length < 14) {
+                        msg.Append(vendory.Title.ToString());
+                        msg.Append("  ");
+                        msg.Append(vendory.DateCreated);
+                        msg.Append("  ");
+                        msg.Append(vendory.Address);
+                        msg.Append(" <br>");
+                    }
+                }
+            }
+
+            await NewsLetterSender(msg.ToString());
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Profile();
+
+            async Task NewsLetterSender(string msge)
+            {
+                var key = Config.Send_Grid_Key;
+                var client = new SendGridClient(key);
+
+                var from = new EmailAddress(_userOptions.ReceiverEmail, "Forgot password");
+                var subject = "Forgot Password Confirmation";
+                var to = new EmailAddress("lukasstc223@gmail.com" , "Dear User");
+                var plainTextContent = "";
+
+
+                var htmlContent = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>" 
+
+                                   + "<center>New Vendors!</center> <br> <br>" + msge +  ".</body></html>";
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var response = await client.SendEmailAsync(msg);
+            }
+        }
+
 
         private async Task<IActionResult> PicChange(ProfileVM model)
         {
@@ -364,7 +440,7 @@ namespace FromLocalsToLocals.Controllers
                     var user = await _userManager.FindByEmailAsync(model.Email);
 
 
-                    await Execute();
+                    await Execute1();
                     return View("ForgotPasswordConfirmation");
                 }
             }
@@ -374,7 +450,7 @@ namespace FromLocalsToLocals.Controllers
                 return View("Error");
             }
 
-            async Task Execute()
+            async Task Execute1()
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 var key = Config.Send_Grid_Key;

@@ -3,6 +3,8 @@
 @model FromLocalsToLocals.ViewModels.ProfileVM
 @inject UserManager<AppUser> userManager;
 
+
+
 <head>
     <link href="~/css/revealEye.css" rel="stylesheet" type="text/css">
 </head>
@@ -31,16 +33,16 @@
             </div>
 
             <hr />
-            <div class=" custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1" asp-for="Subscribe">
+            <div>
 
-                <label class="custom-control-label"
-                       for="customSwitch1"
-                       style="font-family: Tahoma; font-size:16px;">Subscribe to Newsletter</label>
+                    <button value="subscriber" type="submit" name="submitBtn"
+                            class="btn btn-primary form-inline" style="background-color: #CCBA8B; border: 2px #CCBA8B;">
+                        Subscribe for newsletter!
+                    </button>
             </div>
 
-        </form>
-    </div>
+    </form>
+</div>
     <div class="col">
         <h3>@_localizer["Account details"]</h3>
         <form asp-action="Profile" method="post" enctype="multipart/form-data">
