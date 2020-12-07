@@ -10,22 +10,29 @@ namespace FromLocalsToLocals.Utilities
     public static class SendEmail
     {
 
-        public static async Task ExceptionSender()
+        public static async Task NewsLetterSender(string msge, string email)
         {
             var key = Config.Send_Grid_Key;
             var client = new SendGridClient(key);
 
-            var from = new EmailAddress("fromlocalstolocals@gmail.com", "Message");
-            var subject = "Newsletter";
-            var to = new EmailAddress("lukasstc223@gmail.com", "Dear User");
-            var plainTextContent = "We have this exception:";
+            var from = new EmailAddress("fromlocalstolocals@gmail.com", "Forgot password");
+            var subject = "Forgot Password Confirmation";
+            var to = new EmailAddress(email, "Dear User");
+            var plainTextContent = "";
 
 
-            var htmlContent = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body> Laiskas issiustas";
-
+            var htmlContent = "<!DOCTYPE html><html><head></head><body style=\"background-color: #CCBA8B;\">" +
+            "<table class=\"body-wrap\"  style=\"background-color: #CCBA8B;\" ><tr><td class=\"container\">" +
+            "<table><tr><td align=\"center\" class=\"masthead\">" +
+            "<a href=\"https://ibb.co/6HHkSvm\"><img src=\"https://i.ibb.co/0CCxLBc/appLogo.png\" alt=\"appLogo\" border=\"0\" /></a>" +
+            "<h1>From Locals to Locals</h1></td></tr><tr><td class=\"content\"><b>"
+            + msge + "</b></body></html>" +
+            "</td></tr></table></td></tr></table></body></html>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
+
+
 
     }
 }

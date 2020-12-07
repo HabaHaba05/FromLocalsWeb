@@ -120,7 +120,7 @@ namespace FromLocalsToLocals
         {
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate(() => SendEmail.ExceptionSender(), Cron.Hourly);
+            //RecurringJob.AddOrUpdate(() => SendEmail.ExceptionSender(), Cron.Hourly);
 
             app.UseCookiePolicy();
             if (env.IsDevelopment())
