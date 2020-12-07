@@ -19,5 +19,7 @@ namespace FromLocalsToLocals.Models
         [IgnoreDataMember]
         public virtual ICollection<Follower> Following { get; set; }
 
+        public bool Subscribe { get; set; }
+
     }
 }

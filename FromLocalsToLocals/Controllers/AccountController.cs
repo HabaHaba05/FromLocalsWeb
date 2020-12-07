@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
@@ -125,6 +126,8 @@ namespace FromLocalsToLocals.Controllers
             var userId = _userManager.GetUserId(User);
             var user = _context.Users.Single(x => x.Id == userId);
 
+
+
             var model = GetNewProfileVM(user);
 
             return View(model);
@@ -132,16 +135,18 @@ namespace FromLocalsToLocals.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Profile(string submitBtn, ProfileVM model)
+        public async Task<IActionResult> Profile(string submitBtn, ProfileVM model, Vendor vendor)
         {
             return submitBtn switch
             {
                 "picName" => await PicChange(model),
                 "accDetails" => await AccountDetailsChange(model),
                 "password" => await ChangePassword(model),
+                "subscriber" => await SubscribeNewsletter(model, vendor),
                 _ => View(),
             };
         }
+
 
         private async Task<IActionResult> AccountDetailsChange(ProfileVM model)
         {
@@ -165,7 +170,7 @@ namespace FromLocalsToLocals.Controllers
                 else
                 {
                     ModelState.FirstOrDefault(x => x.Key == nameof(model.UserName)).Value.RawValue = user.UserName;
-                    ModelState.AddModelError("", _localizer["Username"] + " " + model.UserName + " " + _localizer["is already taken"]);
+                    ModelState.AddModelError("", _localizer[$"Username '{model.UserName}' is already taken."]);
                 }
             }
             if (model.Email != user.Email)
@@ -173,7 +178,7 @@ namespace FromLocalsToLocals.Controllers
                 if (string.IsNullOrWhiteSpace(model.Email))
                 {
                     ModelState.FirstOrDefault(x => x.Key == nameof(model.Email)).Value.RawValue = user.Email;
-                    ModelState.AddModelError("", _localizer[$"Email cannot be empty"]);
+                    ModelState.AddModelError("", $"Email cannot be empty");
                 }
                 else if (!_context.Users.Any(x => x.Email == model.Email))
                 {
@@ -183,13 +188,98 @@ namespace FromLocalsToLocals.Controllers
                 else
                 {
                     ModelState.FirstOrDefault(x => x.Key == nameof(model.Email)).Value.RawValue = user.Email;
-                    ModelState.AddModelError("", _localizer["Email"] + " " + model.Email + " " + _localizer["is already in use."]);
+                    ModelState.AddModelError("", $"Email '{model.Email}' is already in use.");
                 }
             }
 
             CheckForErrors(resultsList);
             return Profile();
         }
+
+
+        private async Task<IActionResult> SubscribeNewsletter(ProfileVM model, Vendor vendor)
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
+
+            var users = _context.Users.ToList();
+            var vendoriai = _context.Vendors;
+            string emaily;
+            var list = _context.Vendors.OrderByDescending(v => v.DateCreated).Take(3);
+
+
+            var oldModel = GetNewProfileVM(user);
+            var resultsList = new List<IdentityResult>();
+            StringBuilder msg = new StringBuilder();
+
+
+            if (user.Subscribe == true)
+            {
+                user.Subscribe = false;
+                _toastNotification.AddInfoToastMessage("Newsletter unsubscribed!");
+            }
+            else
+            {
+                user.Subscribe = true;
+                _toastNotification.AddSuccessToastMessage("Newsletter subscribed!");
+            }
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            if (vendoriai == null)
+            {
+                msg.Append("At this time there is not new vendors");
+            }
+
+            else
+            {
+                foreach (var u in users)
+                {
+
+                    if (u.Subscribe is true)
+                    {
+                        emaily = u.Email;
+                        foreach (var vendory in list) {
+                            msg.Append(vendory.Title.ToString());
+                            msg.Append("  ");
+                            msg.Append(vendory.DateCreated);
+                            msg.Append(" <br>");
+
+                           
+                        }
+                        await NewsLetterSender(msg.ToString(), emaily);
+                    }
+
+                }
+            }
+
+
+            return Profile();
+
+            async Task NewsLetterSender(string msge, string email)
+            {
+                var key = Config.Send_Grid_Key;
+                var client = new SendGridClient(key);
+
+                var from = new EmailAddress(_userOptions.ReceiverEmail, "Forgot password");
+                var subject = "Forgot Password Confirmation";
+                var to = new EmailAddress(email, "Dear User");
+                var plainTextContent = "";
+
+
+                var htmlContent = "<!DOCTYPE html><html><head></head><body style=\"background-color: #CCBA8B;\">" +
+                "<table class=\"body-wrap\"  style=\"background-color: #CCBA8B;\" ><tr><td class=\"container\">" +
+                "<table><tr><td align=\"center\" class=\"masthead\">" +
+                "<a href=\"https://ibb.co/6HHkSvm\"><img src=\"https://i.ibb.co/0CCxLBc/appLogo.png\" alt=\"appLogo\" border=\"0\" /></a>" +
+                "<h1>From Locals to Locals</h1></td></tr><tr><td class=\"content\"><b>" 
+                + msge + "</b></body></html>" +
+                "</td></tr></table></td></tr></table></body></html>";
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                var response = await client.SendEmailAsync(msg);
+            }
+        }
+
 
         private async Task<IActionResult> PicChange(ProfileVM model)
         {
@@ -200,8 +290,8 @@ namespace FromLocalsToLocals.Controllers
 
             if (model.ImageFile != null && !model.ImageFile.ValidImage())
             {
-                ModelState.AddModelError("", _localizer["Invalid profile image"]);
-                _toastNotification.AddErrorToastMessage(_localizer["Invalid profile image"]);
+                ModelState.AddModelError("", "Invalid profile image");
+                _toastNotification.AddErrorToastMessage("Invalid profile image");
                 return Profile();
             }
 
@@ -236,19 +326,19 @@ namespace FromLocalsToLocals.Controllers
             };
 
             Func<string, Func<bool>, bool> InvalidPassword = (err, action) =>
-              {
-                  if (action())
-                  {
-                      ModelState.AddModelError("", err);
-                      return true;
-                  }
-                  return false;
-              };
+            {
+                if (action())
+                {
+                    ModelState.AddModelError("", err);
+                    return true;
+                }
+                return false;
+            };
 
-            if (InvalidPassword(_localizer["Please, fill all fields"],
-                                () => { return StringArrNull(new string[] { model.Password, model.NewPassword, model.ConfirmPassword });} ) ||
-                InvalidPassword(_localizer["Password must be at least 6 characters long"], () => { return model.NewPassword.Length < Config.minPasswordLength; }) ||
-                InvalidPassword(_localizer["Passwords do not match"], () => { return model.NewPassword != model.ConfirmPassword; })) 
+            if (InvalidPassword("Please, fill all fields",
+                                () => { return StringArrNull(new string[] { model.Password, model.NewPassword, model.ConfirmPassword }); }) ||
+                InvalidPassword("Password must be at least 6 characters long", () => { return model.NewPassword.Length < Config.minPasswordLength; }) ||
+                InvalidPassword("Passwords do not match", () => { return model.NewPassword != model.ConfirmPassword; }))
             {
                 return Profile();
             }
@@ -266,7 +356,7 @@ namespace FromLocalsToLocals.Controllers
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            _toastNotification.AddSuccessToastMessage(_localizer["Password changed successfully"]);
+            _toastNotification.AddSuccessToastMessage("Password changed successfully");
 
             return Profile();
         }
@@ -380,6 +470,7 @@ namespace FromLocalsToLocals.Controllers
                 var key = Config.Send_Grid_Key;
                 var client = new SendGridClient(key);
 
+
                 var from = new EmailAddress(_userOptions.ReceiverEmail, "Forgot password");
                 var subject = _localizer["Forgot Password Confirmation"];
                 var to = new EmailAddress(model.Email, _localizer["Dear User"]);
@@ -389,13 +480,16 @@ namespace FromLocalsToLocals.Controllers
 
              
                 var callbackUrl = Url.Action("ResetPassword", "Account",
-                new { user = user , code = code }, protocol: Request.Scheme); 
+                new { user = user , code = code }, protocol: Request.Scheme);
 
-                var htmlContent = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>" +
+                var htmlContent = "<!DOCTYPE html><html><head></head><body style=\"background-color: #CCBA8B;\">" +
+                "<table class=\"body-wrap\"  style=\"background-color: #CCBA8B;\" ><tr><td class=\"container\">" +
+                "<table><tr><td align=\"center\" class=\"masthead\">" +
+                "<a href=\"https://ibb.co/6HHkSvm\"><img src=\"https://i.ibb.co/0CCxLBc/appLogo.png\" alt=\"appLogo\" border=\"0\" /></a>" +
+                "<h1>From Locals to Locals</h1></td></tr><tr><td class=\"content\"><h3> Please confirm your account by clicking this link: " + " <a href =\""
+                + callbackUrl + "\">link</a> </body></html>" +
+                "</td></tr></table></td></tr></table></body></html>";
 
-                                  _localizer["Please confirm your account by clicking this link:"] + 
-                                  " <a href =\""
-                                                 + callbackUrl + "\">link</a> </body></html>";
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
                 var response = await client.SendEmailAsync(msg);
             }
