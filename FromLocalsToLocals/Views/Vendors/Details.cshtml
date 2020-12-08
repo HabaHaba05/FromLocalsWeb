@@ -3,14 +3,15 @@
 @inject UserManager<AppUser> userManager
 @inject IViewLocalizer _localizer
 @{
+
     ViewData["Title"] = _localizer["Details"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var userForFeed = await userManager.GetUserAsync(User);
 
+
     if (userForFeed == null) { userForFeed = null; }
     else if (userForFeed.Id != Model.User.Id) { userForFeed = null; }
-
 
 }
 @using static FromLocalsToLocals.Utilities.TimeCalculator
@@ -40,6 +41,9 @@
                     case FromLocalsToLocals.Utilities.VendorType.CarRepair:<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
                     break;
 
+                case FromLocalsToLocals.Utilities.VendorType.RuralTourism:<p class="text-muted text-uppercase">Rural tourism</p>
+                    break;
+
                 default: <p class="text-muted text-uppercase">@Model.VendorType</p>
                 break;
         }
@@ -48,7 +52,7 @@
                 <h2>@Model.Title</h2>
             </div>
             <div class="row mb-3">
-                <p>@_localizer["Service registered |"]@CalcRelativeTime(Model.DateCreated)</p>
+                <p>@_localizer["Service registered | "]@CalcRelativeTime(Model.DateCreated)</p>
             </div>
             <hr />
             <div class="row">
@@ -62,7 +66,45 @@
                 }
             </div>
             <hr />
-            <nav class="navbar navbar-expand-lg navbar-light bg-white" style="color: gray; border-radius: 4px;">
+            <div class="row mt-1 mb-3">
+                <h4>Working Hours</h4>
+            </div>
+            @foreach (var item in Model.VendorHours)
+            {
+                <div class="row">
+                    <div class="col">
+                        @switch (item.Day)
+                        {
+                            case 1:<h5>Monday</h5>
+                                break;
+                            case 2: <h5>Tuesday</h5>
+                                break;
+                            case 3: <h5>Wednesday</h5>
+                                break;
+                            case 4: <h5>Thursday</h5>
+                                break;
+                            case 5: <h5>Friday</h5>
+                                break;
+                            case 6: <h5>Saturday</h5>
+                                break;
+                            default: <h5>Sunday</h5>
+                                break;
+                        }
+                    </div>
+                    <div class="col">
+                        @if (item.OpenTime > timeSpan && item.CloseTime > timeSpan)
+                        {
+                            <h5>@item.OpenTime.ToString("hh\\:mm") - @item.CloseTime.ToString("hh\\:mm")</h5>
+                        }
+                        else
+                        {
+                            <h5>Closed</h5>
+                        }
+                    </div>
+                </div>
+            }
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-white mt-4" style="color: gray; border-radius: 4px;">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -81,18 +123,17 @@
                 </div>
             </nav>
             <div class="row mt-3 mb-3" id="map" style="height:250px;">
-
                 <p><b>@_localizer["Address:&nbsp;"]</b>@Model.Address</p>
                 <div id="mapid" style="width: 100%; height: 90%;"></div>
             </div>
 
             <div class="row mt-3 mb-3" id="feed" style="display:none">
-                @if(userForFeed != null){
-                    @await Component.InvokeAsync("CreatePost", new FromLocalsToLocals.Models.ViewModels.CreatePostVM { User = userForFeed, DisplayInDetails = true, VendorTitle= Model.Title })
+                @if (userForFeed != null)
+                {
+                    @await Component.InvokeAsync("CreatePost", new FromLocalsToLocals.Models.ViewModels.CreatePostVM { User = userForFeed, DisplayInDetails = true, VendorTitle = Model.Title })
                 }
                 @await Component.InvokeAsync("NewsFeed", new FromLocalsToLocals.Models.ViewModels.FeedVM { ActiveUser = userForFeed, ActiveTab = FromLocalsToLocals.Utilities.Enums.FeedTabs.VendorFeed, DisplayInDetails = true, Vendor = Model })
             </div>
-
         </div>
     </div>
 </div>
@@ -128,7 +169,5 @@
             $("#feed").toggle("slow");
         }
     }
-
-
 </script>
 

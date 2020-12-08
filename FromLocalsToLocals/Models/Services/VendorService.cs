@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static FromLocalsToLocals.Utilities.TimeCalculator;
 
 namespace FromLocalsToLocals.Models.Services
 {
@@ -73,7 +72,10 @@ namespace FromLocalsToLocals.Models.Services
         }
         public async Task<Vendor> GetVendorAsync(int id)
         {
-            return await _context.Vendors.FirstOrDefaultAsync(m => m.ID == id);
+            var vendor = await _context.Vendors.FirstOrDefaultAsync(m => m.ID == id);
+
+            vendor.VendorHours = await _context.VendorWorkHours.Where(x => x.VendorID == id).ToListAsync();
+            return vendor;
         }
 
         public async Task<List<Vendor>> GetVendorsAsync(string searchString="", string vendorType="")
@@ -95,6 +97,43 @@ namespace FromLocalsToLocals.Models.Services
         {
             var list = _context.Vendors.OrderByDescending(v => v.DateCreated).Take(count);
             return await list.ToListAsync();
+        }
+
+        public async Task<List<Vendor>> GetPopularVendorsAsync(int count)
+        {
+            var list = _context.Vendors.Where(x => (DateTime.UtcNow - x.LastClickDate).Days < 7).OrderByDescending(x => x.Popularity).Take(count);
+            return await list.ToListAsync(); 
+        }
+
+        public async Task AddWorkHoursAsync(WorkHours workHours)
+        {
+            try
+            {
+                _context.VendorWorkHours.Add(workHours);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                await e.ExceptionSender();
+            }
+        }
+
+        public async Task ChangeWorkHoursAsync(WorkHours workHours)
+        {
+            try
+            {
+                var row = _context.VendorWorkHours.FirstOrDefault(x => x.VendorID == workHours.VendorID && x.Day == workHours.Day);
+                row.VendorID = workHours.VendorID;
+                row.Day = workHours.Day;
+                row.OpenTime = workHours.OpenTime;
+                row.CloseTime = workHours.CloseTime;
+                _context.VendorWorkHours.Update(row);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException e)
+            {
+                await e.ExceptionSender();
+            }
         }
 
         public async Task UpdateAsync(Vendor vendor)

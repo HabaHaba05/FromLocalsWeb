@@ -22,7 +22,76 @@
                 <textarea asp-for="About" class="form-control" rows="3" placeholder=@_localizer["Tell us about your shop..."] maxlength="80"></textarea>
                 <span asp-validation-for="About" class="text-danger"></span>
             </div>
-
+            <hr />
+            <p>
+                <a type="button" data-toggle="collapse" href="#workHoursPanel" role="button" aria-expanded="false" aria-controls="workHoursPanel" style="color: black; font-size: 19px;">
+                    <img src="~/Assets/workHours.png" class="mr-2" style="width:30px; height:25px;" /> Choose your working hours
+                </a>
+            </p>
+            <div class="collapse mt-2" id="workHoursPanel">
+                <div class="form-group" name="workHours">
+                @for (var i = 0; i < 7; i++)
+                {
+                    <div class="row" name="dayRow">
+                        <input asp-for="VendorHours[i].Day" value=@(i+1) hidden/>
+                        <div class="col-4">
+                            <div class="form-group" name="workDate">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" asp-for="VendorHours[i].IsWorking" id="@i"/>
+                                    @switch (i)
+                                    {
+                                        case 0:<span>Monday</span>
+                                            break;
+                                        case 1: <span>Tuesday</span>
+                                            
+                                            break;
+                                        case 2: <span>Wednesday</span>
+                                            break;
+                                        case 3: <span>Thursday</span>
+                                            break;
+                                        case 4: <span>Friday</span>
+                                            break;
+                                        case 5: <span>Saturday</span>
+                                            break;
+                                        default: <span>Sunday</span>
+                                            break;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col fromH_@i" style="display: none;">
+                            <div class="form-group d-flex justify-content-between">
+                                <label class="mr-1">From </label>
+                                <select class="form-control" style="max-width: 92px;" asp-for="VendorHours[i].OpenTime">
+                                    @for (var hours = 8; hours < 21; hours++)
+                                    {
+                                        @for (var minutes = 0; minutes < 60; minutes += 30)
+                                        {
+                                            <option value=@hours.ToString("00"):@minutes.ToString("00")>@hours.ToString("00"):@minutes.ToString("00")</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col toH_@i" style="display: none;">
+                            <div class="form d-flex justify-content-between">
+                                <label class="mr-1">To</label>
+                                <select class="form-control" style="max-width: 92px;" asp-for="VendorHours[i].CloseTime">
+                                    @for (var hours = 9; hours < 21; hours++)
+                                    {
+                                        @for (var minutes = 0; minutes < 60; minutes += 30)
+                                        {
+                                            <option value=@hours.ToString("00"):@minutes.ToString("00")>@hours.ToString("00"):@minutes.ToString("00")</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            </div>
+            <hr />
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
                 <div>
@@ -45,7 +114,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value=@_localizer["Confirm"] class="btn btn-success" />
+                <input type="submit" value=@_localizer["Confirm"] class="btn btn-success"/>
             </div>
         </form>
     </div>
@@ -54,6 +123,19 @@
 <script>
     var center = [55.385550, 24.046824];
     var zoom = 6.4;
+
+
+    $(document).ready(function () {
+        $('input:checkbox').removeAttr('checked');
+    })
+
+    $("input").change(function () {
+        var panelFromHours = ".fromH_" + $(this).attr('id');
+        var panelToHours = ".toH_" + $(this).attr('id');
+
+        $(panelFromHours).toggle();
+        $(panelToHours).toggle();    
+    });
 </script>
 <script src="~/js/createMap.js"></script>
 <script src="~/js/editServiceMap.js"></script>

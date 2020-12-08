@@ -11,7 +11,6 @@ namespace FromLocalsToLocals.Models.ViewModels
 {
     public class FeedVM
     {
-
         public AppUser ActiveUser { get; set; }
         public FeedTabs ActiveTab { get; set; }
 
@@ -19,8 +18,5 @@ namespace FromLocalsToLocals.Models.ViewModels
 
         public bool DisplayInDetails { get; set; }
         public Vendor Vendor { get; set; }
-
-
     }
-
 }

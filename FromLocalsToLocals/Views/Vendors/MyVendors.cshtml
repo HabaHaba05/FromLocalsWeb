@@ -38,9 +38,24 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VendorTypeDb)
-                </td>
+
+                @switch (item.VendorTypeDb)
+                {
+                    case "CarRepair":
+                        <td>Car Repair</td>
+                        break;
+
+                    case "RuralTourism":
+                        <td>Rural Tourism</td>
+                        break;
+
+                    default:
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VendorTypeDb)
+                        </td>
+                        break;
+                }
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ID">@_localizer["Edit"]</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">@_localizer["Details"]</a> |
@@ -74,7 +89,7 @@
             $('.modal-footer a').attr('href', '/Vendors/Delete/' + vendorId);
         })
     });
-</script>   
+</script>
 
 
 

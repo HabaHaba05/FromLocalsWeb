@@ -19,6 +19,7 @@ namespace FromLocalsToLocals.Database
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Follower> Followers { get; set; }
+        public DbSet<WorkHours> VendorWorkHours { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

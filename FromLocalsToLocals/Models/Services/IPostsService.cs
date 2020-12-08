@@ -7,8 +7,8 @@ namespace FromLocalsToLocals.Models.Services
 {
     public interface IPostsService
     {
-        Task<IActionResult> GetAllPosts(int skip, int take);
-        Task<IActionResult> GetVendorPosts(int vendorId,int skip, int take);
-        Task<IActionResult> GetFollowingPosts(string userId,int skip, int take);
+        Task<IActionResult> GetAllPostsAsync(int skip, int take);
+        Task<IActionResult> GetVendorPostsAsync(int vendorId,int skip, int take);
+        Task<IActionResult> GetFollowingPostsAsync(string userId,int skip, int take);
     }
 }

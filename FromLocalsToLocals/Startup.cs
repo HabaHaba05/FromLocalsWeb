@@ -111,9 +111,11 @@ namespace FromLocalsToLocals
                 .UseRecommendedSerializerSettings()
                 .UseMemoryStorage());
 
+
             // Add the processing server as IHostedService
             services.AddHangfireServer();
         }
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -145,10 +147,6 @@ namespace FromLocalsToLocals
 
             app.UseNToastNotify();
 
-            //
-            
-            //
-
             //var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
@@ -160,7 +158,6 @@ namespace FromLocalsToLocals
                 endpoints.MapHub<NotificationHub>("/notificationHub");
             });
         }
-
 
     }
 }

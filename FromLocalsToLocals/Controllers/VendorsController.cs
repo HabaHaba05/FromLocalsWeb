@@ -83,6 +83,10 @@ namespace FromLocalsToLocals.Controllers
                 return NotFound();
             }
 
+            vendor.Popularity++;
+            vendor.LastClickDate = DateTime.UtcNow;
+            await _vendorService.UpdateAsync(vendor);
+
             return View(vendor);
         }
 
@@ -129,6 +133,33 @@ namespace FromLocalsToLocals.Controllers
                     model.SetValuesToVendor(vendor);
 
                     await _vendorService.CreateAsync(vendor);
+
+                    var serviceOperatingHours = model.VendorHours;
+
+                    foreach (var elem in serviceOperatingHours)
+                    {
+                        if (elem.IsWorking)
+                        {
+                            if (elem.CloseTime < elem.OpenTime)
+                            {
+                                ModelState.AddModelError("", "Invalid work hours");
+                                _toastNotification.AddErrorToastMessage("Choose appropriate working hours");
+                                return View(model);
+                            }
+
+                            else
+                            {
+                                WorkHours workHours = new WorkHours(vendor.ID, elem.Day, elem.OpenTime, elem.CloseTime);
+                                await _vendorService.AddWorkHoursAsync(workHours);
+                            }
+                        }
+                        else
+                        {
+                            TimeSpan timeSpan = new TimeSpan(-1);
+                            WorkHours workHours = new WorkHours(vendor.ID, elem.Day, timeSpan, timeSpan);
+                            await _vendorService.AddWorkHoursAsync(workHours);
+                        }
+                    }
 
                     _toastNotification.AddSuccessToastMessage(_localizer["Service Created"]);
                     return RedirectToAction("MyVendors");
@@ -206,6 +237,32 @@ namespace FromLocalsToLocals.Controllers
                     vendor.Longitude = latLng.Item2;
 
                     model.SetValuesToVendor(vendor);
+
+                    var serviceOperatingHours = model.VendorHours;
+                    foreach (var elem in serviceOperatingHours)
+                    {
+                        if (elem.IsWorking)
+                        {
+                            if (elem.CloseTime < elem.OpenTime)
+                            {
+                                ModelState.AddModelError("", "Invalid work hours");
+                                _toastNotification.AddErrorToastMessage("Choose appropriate working hours");
+                                return View(model);
+                            }
+
+                            else
+                            {
+                                WorkHours workHours = new WorkHours(vendor.ID, elem.Day, elem.OpenTime, elem.CloseTime);
+                                await _vendorService.ChangeWorkHoursAsync(workHours);
+                            }
+                        }
+                        else
+                        {
+                            TimeSpan timeSpan = new TimeSpan(-1);
+                            WorkHours workHours = new WorkHours(vendor.ID, elem.Day, timeSpan, timeSpan);
+                            await _vendorService.ChangeWorkHoursAsync(workHours);
+                        }
+                    }
 
                     await _vendorService.UpdateAsync(vendor);
                     _toastNotification.AddSuccessToastMessage(_localizer["Service Updated"]);

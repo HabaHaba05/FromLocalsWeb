@@ -2,12 +2,22 @@
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using FromLocalsToLocals.Database;
+using Geocoding;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace FromLocalsToLocals.Models.ViewModels
 {
     public class CreateEditVendorVM
     {
-        public CreateEditVendorVM(){}
+        public CreateEditVendorVM() { }
 
         public CreateEditVendorVM(Vendor vendor)
         {
@@ -15,11 +25,11 @@ namespace FromLocalsToLocals.Models.ViewModels
             Title = vendor.Title;
             About = vendor.About;
             Address = vendor.Address;
-            VendorType = vendor.VendorType;
+            VendorType = vendor.VendorType;         
         }
 
         public int ID { get; set; }
-        
+
         [Required]
         [Display(Name = "Title")]
         public string Title { get; set; }
@@ -39,6 +49,7 @@ namespace FromLocalsToLocals.Models.ViewModels
 
         public IFormFile Image { get; set; }
 
+        public List<WorkHours> VendorHours { get; set; }
 
         public void SetValuesToVendor(Vendor vendor)
         {

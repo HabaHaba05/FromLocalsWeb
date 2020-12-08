@@ -36,7 +36,7 @@
     var rows = Math.Ceiling(itemCountDouble / itemsInRow);
     var vendorCount = Model.Vendors.Count;
 }
-<h2 class="mt-4 mb-2" style="text-align: center; font-size: 30px;">@_localizer["New Services"]</h2>
+<h3 class="mt-4 mb-2" style="text-align: center;">@_localizer["New Services"]</h3>
 <p class="mt-2" style="text-align: center; font-size: 18px;">@_localizer["Services in the past month registered on our site"]</p>
 <hr />
 @if (Model.NewVendors.Count() == 0)
@@ -67,9 +67,12 @@ else
                             case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
                             break;
 
-                        default: <p class="text-muted text-uppercase">@vendor.VendorTypeDb</p>
-                        break;
-                }
+                            case "RuralTourism":<p class="text-muted text-uppercase">Rural tourism</p>
+                            break;
+
+                            default: <p class="text-muted text-uppercase">@vendor.VendorTypeDb</p>
+                            break;
+                        }
                         <hr />
                         @if (vendor.ReviewsCount.Sum() == 0)
                         {
@@ -142,11 +145,11 @@ else
                         {
                             if (user.Following.Any(x => x.VendorID == vendor.ID))
                             {
-                                <button data-follow="false" data-id="@vendor.ID" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Unfollow</button>
+                                <button data-follow="false" data-id="@vendor.ID" class="btn btn-outline-dark w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Unfollow</button>
                             }
                             else
                             {
-                                <button data-follow="true" data-id="@vendor.ID" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Follow</button>
+                                <button data-follow="true" data-id="@vendor.ID" class="btn btn-dark w-100 followBtn" onclick="followBtnClick(this,@vendor.ID)">Follow</button>
                             }
                         }
                     </div>
@@ -156,7 +159,8 @@ else
 
     </div>
 }
-<h2 class="mt-4" style="text-align: center; font-size: 30px;"> @_localizer["All Services"]</h2>
+<h3 class="mt-4" style="text-align: center;"> @_localizer["All Services"]</h3>
+<p class="mt-2" style="text-align: center; font-size: 18px;">Experience all the finest products around you</p>
 <hr />
 <p>
     <a type="button" data-toggle="collapse" href="#serviceFilter" role="button" aria-expanded="false" aria-controls="serviceFilter" style="color: black; font-size: 19px;">
@@ -185,21 +189,29 @@ else
     </form>
 </div>
 <hr />
-@for (int i = 0; i < rows; i++)
+@if (vendorCount == 0)
 {
-    <div class="row">
-        @for (int j = 0; j < itemsInRow && i * itemsInRow + j < vendorCount; j++)
-        {
-            <div class="col-sm-@(12/itemsInRow) mb-2 d-flex justify-content-center">
-                <div class="card" style="width:inherit; height:inherit; background-color: #F7F7F7;">
-                    @if (Model.Vendors[i * itemsInRow + j].Image == null)
-                    {
-                        <img src="~/Assets/localSeller.png" class="mt-3" style="width:160px ; height:150px; border-radius: 50%; align-self:center;" />
-                    }
-                    else
-                    {
-                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Vendors[i * itemsInRow + j].Image)" class="mt-3" style="width:160px; height: 150px; border-radius: 50%; align-self:center;" />
-                    }
+    <div class="row d-flex justify-content-center">
+        <img src="~/Assets/suchEmpty.png" style="width:80%;" />
+    </div>
+}
+else
+{
+    @for (int i = 0; i < rows; i++)
+    {
+        <div class="row">
+            @for (int j = 0; j < itemsInRow && i * itemsInRow + j < vendorCount; j++)
+            {
+                <div class="col-sm-@(12 / itemsInRow) mb-2 d-flex justify-content-center">
+                    <div class="card" style="width:inherit; height:inherit; background-color: #F7F7F7;">
+                        @if (Model.Vendors[i * itemsInRow + j].Image == null)
+                        {
+                            <img src="~/Assets/localSeller.png" class="mt-3" style="width:160px ; height:150px; border-radius: 50%; align-self:center;" />
+                        }
+                        else
+                        {
+                            <img src="data:image;base64,@System.Convert.ToBase64String(Model.Vendors[i * itemsInRow + j].Image)" class="mt-3" style="width:160px; height: 150px; border-radius: 50%; align-self:center;" />
+                        }
                     <div class="card-body">
                         <h5 class="card-title" style="margin:0px;">@Model.Vendors[i * itemsInRow + j].Title</h5>
                         <hr />
@@ -208,9 +220,12 @@ else
                             case "CarRepair":<p class="text-muted text-uppercase">@_localizer["Car repair"]</p>
                             break;
 
-                        default: <p class="text-muted text-uppercase">@Model.Vendors[i * itemsInRow + j].VendorTypeDb</p>
-                        break;
-                }
+                            case "RuralTourism":<p class="text-muted text-uppercase">Rural tourism</p>
+                            break;
+
+                            default: <p class="text-muted text-uppercase">@Model.Vendors[i * itemsInRow + j].VendorTypeDb</p>
+                            break;
+                        }
                         <hr />
                         @if (Model.Vendors[i * itemsInRow + j].ReviewsCount.Sum() == 0)
                         {
@@ -283,18 +298,19 @@ else
                         {
                             if (user.Following.Any(x => x.VendorID == Model.Vendors[i * itemsInRow + j].ID))
                             {
-                                <button data-follow="false" data-id="@Model.Vendors[i * itemsInRow + j].ID" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Unfollow</button>
+                                <button data-follow="false" data-id="@Model.Vendors[i * itemsInRow + j].ID" class="btn btn-outline-dark w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Unfollow</button>
                             }
                             else
                             {
-                                <button data-follow="true" data-id="@Model.Vendors[i * itemsInRow + j].ID" class="btn btn-primary w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Follow</button>
+                                <button data-follow="true" data-id="@Model.Vendors[i * itemsInRow + j].ID" class="btn btn-dark w-100 followBtn" onclick="followBtnClick(this,@Model.Vendors[i * itemsInRow + j].ID)">Follow</button>
                             }
                         }
                     </div>
+                    </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
 }
 <hr />
 <ul class="pagination">
@@ -312,33 +328,4 @@ else
     </li>
 </ul>
 
-<script>
-    function followBtnClick(obj, id) {
-
-        var fButtons = $(`.followBtn[data-id='${id}']`);;
-        $.ajax({
-            type: "POST",
-            url: '/Follower/' + obj.innerText + '/' + id,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (m) {
-                if (m.success) {
-                    if (obj.innerText == "Follow") {
-                        for (var i = 0; i < fButtons.length; i++) {
-                            fButtons[i].innerText = "Unfollow";
-                        }
-                    } else if (obj.innerText == "Unfollow") {
-                        for (var i = 0; i < fButtons.length; i++) {
-                            fButtons[i].innerText = "Follow";
-                        }
-                    }
-                } else {
-                    alert("Error occured when trying to " + obj.innerText + " vendor");
-                }
-            },
-            error: function (e) {
-                alert("Error occured when trying to " + obj.innerText + " vendor");
-            }
-        });
-    }
-</script>
+<script src="~/js/following.js"></script>

@@ -41,9 +41,11 @@ namespace FromLocalsToLocals.Controllers
 
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(HomeVM homeVM)
         {
-            return View(await _vendorService.GetVendorsAsync(searchString, ""));
+            homeVM.AllVendors = await _vendorService.GetVendorsAsync(null, "");
+            homeVM.PopularVendors = await _vendorService.GetPopularVendorsAsync(4);
+            return View(homeVM);
         }
 
         public IActionResult ReportBug()

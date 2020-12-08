@@ -1,13 +1,11 @@
-﻿
-
-using FromLocalsToLocals.Database;
+﻿using FromLocalsToLocals.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Helpers;
+
 
 namespace FromLocalsToLocals.Models.Services
 {
@@ -20,7 +18,7 @@ namespace FromLocalsToLocals.Models.Services
             _context = context;
         }
 
-        public async Task<IActionResult> GetAllPosts(int skip, int take)
+        public async Task<IActionResult> GetAllPostsAsync(int skip, int take)
         {
             try
             {
@@ -33,7 +31,7 @@ namespace FromLocalsToLocals.Models.Services
 
         }
 
-        public async Task<IActionResult> GetFollowingPosts(string userId, int skip, int take)
+        public async Task<IActionResult> GetFollowingPostsAsync(string userId, int skip, int take)
         {
             try
             {
@@ -58,7 +56,7 @@ namespace FromLocalsToLocals.Models.Services
             }
         }
 
-        public async Task<IActionResult> GetVendorPosts(int vendorId, int skip, int take)
+        public async Task<IActionResult> GetVendorPostsAsync(int vendorId, int skip, int take)
         {
             try
             {

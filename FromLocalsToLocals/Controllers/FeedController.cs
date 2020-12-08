@@ -41,19 +41,19 @@ namespace FromLocalsToLocals.Controllers
             return View(model);
         } 
         [HttpGet]
-        public async Task<IActionResult> GetAllPosts(int skip, int itemsCount)
+        public async Task<IActionResult> GetAllPostsAsync(int skip, int itemsCount)
         {
-            return Json(await _postsService.GetAllPosts(skip, itemsCount));
+            return Json(await _postsService.GetAllPostsAsync(skip, itemsCount));
         }
         [HttpGet]
-        public async Task<IActionResult> GetFollowingPosts(string userId,int skip, int itemsCount)
+        public async Task<IActionResult> GetFollowingPostsAsync(string userId,int skip, int itemsCount)
         {
-            return Json(await _postsService.GetFollowingPosts(userId,skip, itemsCount));
+            return Json(await _postsService.GetFollowingPostsAsync(userId,skip, itemsCount));
         }
         [HttpGet]
-        public async Task<IActionResult> GetVendorPosts(int vendorId, int skip, int itemsCount)
+        public async Task<IActionResult> GetVendorPostsAsync(int vendorId, int skip, int itemsCount)
         {
-            return Json(await _postsService.GetVendorPosts(vendorId,skip, itemsCount));
+            return Json(await _postsService.GetVendorPostsAsync(vendorId,skip, itemsCount));
         }
 
         [Authorize]
@@ -84,7 +84,7 @@ namespace FromLocalsToLocals.Controllers
                     await _vendorService.AddPostAsync(selectedVendor,post);
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     _toastNotification.AddErrorToastMessage("Something unexpected happened. Cannot create a post.");
                     return Redirect(model.PostBackUrl);
