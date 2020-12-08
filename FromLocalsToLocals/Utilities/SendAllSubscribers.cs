@@ -11,21 +11,14 @@ namespace FromLocalsToLocals.Utilities
 {
     public class SendAllSubscribers
     {
-
-            
-
         private readonly AppDbContext _context;
 
-
-        public SendAllSubscribers(AppDbContext context)
-        {
-
-            _context = context;
-
+        public SendAllSubscribers(AppDbContext context){
+            _context = context;      
         }
-
-        public async void SendingAll()
+        public async Task SendingAll()
         {
+
             var users = _context.Users.ToList();
             var vendoriai = _context.Vendors;
             string emaily;

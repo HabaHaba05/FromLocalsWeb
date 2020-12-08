@@ -201,17 +201,7 @@ namespace FromLocalsToLocals.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var user = _context.Users.FirstOrDefault(x => x.Id == userId);
-
-            var users = _context.Users.ToList();
-            var vendoriai = _context.Vendors;
-            string emaily;
-            var list = _context.Vendors.OrderByDescending(v => v.DateCreated).Take(3);
-
-
-            var oldModel = GetNewProfileVM(user);
             var resultsList = new List<IdentityResult>();
-            StringBuilder msg = new StringBuilder();
-
 
             if (user.Subscribe == true)
             {
@@ -227,34 +217,9 @@ namespace FromLocalsToLocals.Controllers
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            if (vendoriai == null)
-            {
-                msg.Append("At this time there is not new vendors");
-            }
-
-            else
-            {
-                foreach (var u in users)
-                {
-
-                    if (u.Subscribe is true)
-                    {
-                        emaily = u.Email;
-                        foreach (var vendory in list) {
-                            msg.Append(vendory.Title.ToString());
-                            msg.Append("  ");
-                            msg.Append(vendory.DateCreated);
-                            msg.Append(" <br>");                           
-                        }
-                        await SendEmail.NewsLetterSender(msg.ToString(), emaily);
-                    }
-
-                }
-            }
-
+            CheckForErrors(resultsList);
             return Profile();
 
-          
         }
 
 

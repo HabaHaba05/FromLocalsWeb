@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using FromLocalsToLocals.Database;
 using FromLocalsToLocals.Models;
-using Microsoft.AspNet.Identity;
 using FromLocalsToLocals.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,9 +27,16 @@ namespace FromLocalsToLocals
 {
     public class Startup
     {
+        public readonly AppDbContext _context;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;         
+        }
+
+        public Startup(AppDbContext context)
+        {
+            _context = context;
         }
 
         public IConfiguration Configuration { get; }
@@ -119,8 +121,9 @@ namespace FromLocalsToLocals
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs)
         {
             app.UseHangfireDashboard();
+            var sendAll = new SendAllSubscribers(_context);
 
-            //RecurringJob.AddOrUpdate(() => SendEmail.ExceptionSender(), Cron.Hourly);
+            RecurringJob.AddOrUpdate(() => sendAll.SendingAll(), Cron.MinuteInterval(5));
 
             app.UseCookiePolicy();
             if (env.IsDevelopment())
